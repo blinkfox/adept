@@ -1,9 +1,11 @@
 package com.blinkfox.adept.helpers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import org.pmw.tinylog.Logger;
 
 /**
  * Properties属性读取工具类.
@@ -23,14 +25,14 @@ public enum PropHelper {
             InputStream in = this.getClass().getClassLoader().getResourceAsStream(fileName);
             try {
                 props.load(in);
-                Logger.info("加载properties配置文件完成!");
+                log.info("加载properties配置文件完成!");
             } catch (IOException e) {
-                Logger.error(e, "加载properties配置文件出错！");
+                log.error("加载properties配置文件出错！", e);
             } finally {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    Logger.error(e, "关闭IO流出错！");
+                    log.error("关闭IO流出错！", e);
                 }
             }
             return props;
@@ -47,6 +49,8 @@ public enum PropHelper {
         }
 
     };
+
+    private static final Logger log = LoggerFactory.getLogger(PropHelper.class);
 
     /**
      * 私有构造方法.

@@ -3,7 +3,8 @@ package com.blinkfox.adept.config;
 import com.blinkfox.adept.exception.LoadAdeptConfigException;
 import com.blinkfox.adept.helpers.ClassHelper;
 
-import org.pmw.tinylog.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adept配置信息管理器类.
@@ -16,6 +17,8 @@ public class AdeptConfigManager {
 
     /* 配置信息 */
     private static final ConfigInfo configInfo = ConfigInfo.getInstance();
+
+    private static final Logger log = LoggerFactory.getLogger(AdeptConfigManager.class);
 
     /**
      * 私有构造方法.
@@ -38,7 +41,7 @@ public class AdeptConfigManager {
      */
     public void initLoad(String configClass) {
         this.getAndLoadConfig(configClass);
-        Logger.info("Adept的配置信息加载完成!");
+        log.info("Adept的配置信息加载完成!");
     }
 
     /**
@@ -54,7 +57,7 @@ public class AdeptConfigManager {
      */
     public void destroy() {
         configInfo.clear();
-        Logger.info("清除了Adept的配置信息！");
+        log.info("清除了Adept的配置信息！");
     }
 
     /**
@@ -62,7 +65,7 @@ public class AdeptConfigManager {
      * @param configClass 配置类的class路径
      */
     private void getAndLoadConfig(String configClass) {
-        Logger.info("Adept开始加载，Zealot配置类为:{}", configClass);
+        log.info("Adept开始加载，Adept的配置类为:{}", configClass);
         if (configClass == null || configClass.length() == 0) {
             throw new LoadAdeptConfigException("未获取到 AdeptConfig 配置信息!");
         }

@@ -3,7 +3,6 @@ package com.blinkfox.adept.core.results.impl;
 import com.blinkfox.adept.core.results.ResultHandler;
 import com.blinkfox.adept.exception.ResultsTransformException;
 import com.blinkfox.adept.helpers.JdbcHelper;
-import org.pmw.tinylog.Logger;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

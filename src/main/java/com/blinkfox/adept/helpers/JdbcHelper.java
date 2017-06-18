@@ -17,13 +17,16 @@ import java.sql.Types;
 import java.util.Map;
 import javax.sql.DataSource;
 
-import org.pmw.tinylog.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Connection工具类.
  * @author blinkfox on 2017/6/7.
  */
 public final class JdbcHelper {
+
+    private static final Logger log = LoggerFactory.getLogger(JdbcHelper.class);
 
     /**
      * 私有构造方法.
@@ -45,7 +48,7 @@ public final class JdbcHelper {
         try {
             return ds.getConnection();
         } catch (SQLException e) {
-            Logger.error(e, "从数据源（连接池）中获取数据库连接失败.");
+            log.error("从数据源（连接池）中获取数据库连接失败.", e);
             return null;
         }
     }
@@ -137,7 +140,7 @@ public final class JdbcHelper {
                 // 获取并调用setter方法.
                 Method propSetter = prop.getWriteMethod();
                 if (propSetter == null || propSetter.getParameterTypes().length != 1) {
-                    Logger.warn("类'{}'的属性'{}'没有标准的setter方法", beanClass.getName(), columnName);
+                    log.warn("类'{}'的属性'{}'没有标准的setter方法", beanClass.getName(), columnName);
                     continue;
                 }
 
@@ -159,7 +162,7 @@ public final class JdbcHelper {
             try {
                 conn.close();
             } catch (SQLException e) {
-                Logger.error(e, "关闭数据库连接Connection失败！");
+                log.error("关闭数据库连接Connection失败！", e);
             }
         }
     }
@@ -173,7 +176,7 @@ public final class JdbcHelper {
             try {
                 pstmt.close();
             } catch (SQLException e) {
-                Logger.error(e, "关闭PreparedStatement失败！");
+                log.error("关闭PreparedStatement失败！", e);
             }
         }
     }
@@ -187,7 +190,7 @@ public final class JdbcHelper {
             try {
                 rs.close();
             } catch (SQLException e) {
-                Logger.error(e, "关闭ResultSet失败！");
+                log.error("关闭ResultSet失败！", e);
             }
         }
     }

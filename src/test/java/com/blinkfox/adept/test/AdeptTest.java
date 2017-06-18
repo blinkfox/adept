@@ -18,13 +18,16 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.pmw.tinylog.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adept测试类.
  * @author blinkfox on 2017/6/5.
  */
 public class AdeptTest {
+
+    private static final Logger log = LoggerFactory.getLogger(AdeptTest.class);
 
     /* 查询所有用户的SQL语句. */
     private static final String ALL_USER_SQL = "SELECT * FROM t_user";
@@ -112,7 +115,7 @@ public class AdeptTest {
                 .query(USER_INFO_SQL, 3)
                 .end(BeanHandler.newInstance(UserInfo.class));
         Assert.assertNotNull(userInfo);
-        Logger.info(userInfo);
+        log.info(userInfo.toString());
     }
 
     /**
@@ -126,7 +129,7 @@ public class AdeptTest {
                 .end(BeanListHandler.newInstance(UserInfo.class));
         Assert.assertNotNull(userInfos);
         Assert.assertTrue(userInfos.size() >= 3);
-        Logger.info(userInfos);
+        log.info(userInfos.toString());
     }
 
     /**
@@ -138,7 +141,7 @@ public class AdeptTest {
                 .query(ALL_USER_SQL)
                 .end(ColumnsHandler.newInstance());
         Assert.assertNotNull(nickNames);
-        Logger.info(nickNames);
+        log.info(nickNames.toString());
     }
 
     /**
@@ -149,7 +152,7 @@ public class AdeptTest {
         int count = (Integer) Adept.quickStart()
                 .query("SELECT MAX(u.n_age) FROM t_user AS u")
                 .end(SingleHandler.newInstance());
-        Logger.info("最大年龄是:{}", count);
+        log.info("最大年龄是:{}", count);
         Assert.assertTrue(count >= 27);
     }
 

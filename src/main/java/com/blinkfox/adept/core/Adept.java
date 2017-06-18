@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 
-import org.pmw.tinylog.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adept核心调用类.
@@ -27,6 +28,8 @@ public final class Adept {
 
     /* 配置信息 */
     private static final ConfigInfo configInfo = ConfigInfo.getInstance();
+
+    private static final Logger log = LoggerFactory.getLogger(Adept.class);
 
     /* 数据库连接 */
     private static Connection conn;
@@ -154,7 +157,7 @@ public final class Adept {
         }
 
         // 根据数据库连接、SQL语句及参数得到PreparedStatement实例，然后再得到ResultSet实例.
-        Logger.info("执行的sql:{}\n参数params:{}", sql, Arrays.toString(params));
+        log.info("执行的sql:{}\n参数params:{}", sql, Arrays.toString(params));
         pstmt = JdbcHelper.getPreparedStatement(conn, sql, params);
         return this.setRs(JdbcHelper.getQueryResultSet(pstmt));
     }
