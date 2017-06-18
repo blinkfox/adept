@@ -3,6 +3,7 @@ package com.blinkfox.adept.core.results.impl;
 import com.blinkfox.adept.core.results.ResultHandler;
 import com.blinkfox.adept.exception.ResultsTransformException;
 import com.blinkfox.adept.helpers.JdbcHelper;
+import org.pmw.tinylog.Logger;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -39,7 +40,7 @@ public class MapHandler implements ResultHandler<Map<String, Object>> {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
-            if (rs.next() && rs.first()) {
+            if (rs.next()) {
                 for (int i = 0, cols = rsmd.getColumnCount(); i < cols; i++)  {
                     map.put(JdbcHelper.getColumn(rsmd, i + 1), rs.getObject(i + 1));
                 }

@@ -53,7 +53,7 @@ public class BeanHandler implements ResultHandler {
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
             Map<String, PropertyDescriptor> propMap = IntrospectorManager.newInstance().getPropMap(beanClass);
-            if (rs.next() && rs.first()) {
+            if (rs.next()) {
                 beanObj = JdbcHelper.getBeanValue(rs, rsmd, beanClass, propMap);
             }
         } catch (Exception e) {

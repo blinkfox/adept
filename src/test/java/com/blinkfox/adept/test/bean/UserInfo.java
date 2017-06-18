@@ -1,7 +1,5 @@
 package com.blinkfox.adept.test.bean;
 
-import java.util.Date;
-
 /**
  * 用户信息Bean.
  * @author blinkfox on 2017/6/13.
@@ -9,13 +7,13 @@ import java.util.Date;
 public class UserInfo {
 
     /* 唯一标识 */
-    private int id;
+    private String id;
 
     /* 姓名name */
     private String name;
 
     /* 昵称 */
-    private String nickname;
+    private String nickName;
 
     /* 邮箱 */
     private String email;
@@ -24,7 +22,7 @@ public class UserInfo {
     private int sex;
 
     /* 生日 */
-    private Date birthday;
+    private String birthday;
 
     /**
      * 空构造方法.
@@ -34,11 +32,11 @@ public class UserInfo {
     }
 
     /* getter和setter方法. */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -50,12 +48,12 @@ public class UserInfo {
         this.name = name;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getEmail() {
@@ -74,20 +72,24 @@ public class UserInfo {
         this.sex = sex;
     }
 
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
+    /**
+     * toString方法.
+     * @return String
+     */
     @Override
     public String toString() {
         return "bean{"
                 + "id='" + id + '\''
                 + ", name='" + name + '\''
-                + ", nickname='" + nickname + '\''
+                + ", nickName='" + nickName + '\''
                 + ", email='" + email + '\''
                 + ", sex=" + sex
                 + ", birthday=" + birthday

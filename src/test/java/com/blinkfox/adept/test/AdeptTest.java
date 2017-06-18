@@ -27,7 +27,10 @@ import org.pmw.tinylog.Logger;
 public class AdeptTest {
 
     /* 查询所有用户的SQL语句. */
-    private static final String ALL_USER_SQL = "SELECT * FROM user";
+    private static final String ALL_USER_SQL = "SELECT * FROM t_user";
+
+    private static final String USER_INFO_SQL = "SELECT c_id AS id, c_name AS name, c_nickname AS nickName,"
+            + " c_email AS email, n_sex AS sex, c_birthday AS birthday FROM t_user AS u limit 0, ?";
 
     /**
      * 初始化加载Adept配置.
@@ -60,7 +63,7 @@ public class AdeptTest {
      */
     @Test
     public void testQuery() {
-        String sql = "SELECT * FROM user AS u WHERE u.age > ?";
+        String sql = "SELECT * FROM t_user AS u WHERE u.n_age > ?";
         ResultSet rs = Adept.quickStart().query(sql, 19).getRs();
         Assert.assertNotNull(rs);
     }
@@ -70,7 +73,8 @@ public class AdeptTest {
      */
     @Test
     public void testToMapList() {
-        String sql = "SELECT id AS bh, name AS myName, email AS myEmail, birthday FROM user AS u WHERE u.age > ?";
+        String sql = "SELECT c_id AS bh, c_name AS myName, c_email AS myEmail, c_birthday "
+                + "FROM t_user AS u WHERE u.n_age > ?";
         List<Map<String, Object>> maps = Adept.quickStart().query(sql, 19).end();
         Assert.assertNotNull(maps);
     }
@@ -80,11 +84,11 @@ public class AdeptTest {
      */
     @Test
     public void testToMap() {
-        String sql = "SELECT COUNT(*) AS user_count FROM user AS u";
+        String sql = "SELECT COUNT(*) AS user_count FROM t_user AS u";
         Map<String, Object> map = Adept.quickStart().query(sql).end(MapHandler.newInstance());
         // 获取用户总数的map，并断言数量
         Assert.assertNotNull(map);
-        Assert.assertEquals(6L, map.get("user_count"));
+        Assert.assertEquals(3, map.get("user_count"));
     }
 
     /**
@@ -95,6 +99,7 @@ public class AdeptTest {
     public void testEndByClass() {
         Map<String, Object> map = (Map<String, Object>) Adept.quickStart().query(ALL_USER_SQL).end(MapHandler.class);
         Assert.assertNotNull(map);
+        Assert.assertEquals("闪烁之狐", map.get("c_nickname"));
     }
 
     /**
@@ -104,7 +109,7 @@ public class AdeptTest {
     @SuppressWarnings("unchecked")
     public void testToBean() {
         UserInfo userInfo = (UserInfo) Adept.quickStart()
-                .query("SELECT id, name, nickname AS nickname, email AS email, sex, birthday FROM user AS u limit 0, 1")
+                .query(USER_INFO_SQL, 3)
                 .end(BeanHandler.newInstance(UserInfo.class));
         Assert.assertNotNull(userInfo);
         Logger.info(userInfo);
@@ -117,9 +122,10 @@ public class AdeptTest {
     @SuppressWarnings("unchecked")
     public void testToBeanList() {
         List<UserInfo> userInfos = (List<UserInfo>) Adept.quickStart()
-                .query("SELECT id, name, nickname AS nickname, email AS email, sex, birthday FROM user AS u")
+                .query(USER_INFO_SQL, 5)
                 .end(BeanListHandler.newInstance(UserInfo.class));
         Assert.assertNotNull(userInfos);
+        Assert.assertTrue(userInfos.size() >= 3);
         Logger.info(userInfos);
     }
 
@@ -129,7 +135,7 @@ public class AdeptTest {
     @Test
     public void testToColumnList() {
         List<Object> nickNames = Adept.quickStart()
-                .query("SELECT id FROM user AS u")
+                .query(ALL_USER_SQL)
                 .end(ColumnsHandler.newInstance());
         Assert.assertNotNull(nickNames);
         Logger.info(nickNames);
@@ -140,10 +146,11 @@ public class AdeptTest {
      */
     @Test
     public void testToSingle() {
-        Object count = Adept.quickStart()
-                .query("SELECT COUNT(*) FROM user AS u")
+        int count = (Integer) Adept.quickStart()
+                .query("SELECT MAX(u.n_age) FROM t_user AS u")
                 .end(SingleHandler.newInstance());
-        Assert.assertEquals(6L, count);
+        Logger.info("最大年龄是:{}", count);
+        Assert.assertTrue(count >= 27);
     }
 
     /**

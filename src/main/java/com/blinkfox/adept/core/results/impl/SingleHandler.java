@@ -33,7 +33,7 @@ public class SingleHandler implements ResultHandler<Object> {
 
         // 遍历Resultset，返回第一行、第一列的单个数据.
         try {
-            return rs.next() && rs.first() ? rs.getObject(1) : null;
+            return rs.next() ? rs.getObject(1) : null;
         } catch (Exception e) {
             throw new ResultsTransformException("将'ResultSet'结果集转换为'map的List集合'出错!", e);
         }
