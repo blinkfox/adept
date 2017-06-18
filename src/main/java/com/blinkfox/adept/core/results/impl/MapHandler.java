@@ -26,11 +26,10 @@ public class MapHandler implements ResultHandler<Map<String, Object>> {
     /**
      * 将'ResultSet'结果集的第一行数据转换为'有序Map'.
      * @param rs ResultSet实例
-     * @param otherParams 其他参数
      * @return Map
      */
     @Override
-    public Map<String, Object> transform(ResultSet rs, Object... otherParams) {
+    public Map<String, Object> transform(ResultSet rs) {
         if (rs == null) {
             return null;
         }

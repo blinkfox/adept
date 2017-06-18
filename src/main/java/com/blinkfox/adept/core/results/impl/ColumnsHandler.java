@@ -24,11 +24,10 @@ public class ColumnsHandler implements ResultHandler<List<Object>> {
     /**
      * 将'ResultSet'结果集的第一列数据转换为'List集合'的方法.
      * @param rs ResultSet实例
-     * @param otherParams 其他参数
      * @return Object的List集合
      */
     @Override
-    public List<Object> transform(ResultSet rs, Object... otherParams) {
+    public List<Object> transform(ResultSet rs) {
         if (rs == null) {
             return null;
         }

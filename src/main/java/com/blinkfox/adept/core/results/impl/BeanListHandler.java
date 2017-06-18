@@ -41,11 +41,10 @@ public class BeanListHandler implements ResultHandler {
     /**
      * 将`ResultSet`结果集的所有数据转换为`Java Bean的List集合`的方法.
      * @param rs ResultSet实例
-     * @param otherParams 其他参数
      * @return 泛型T的实例
      */
     @Override
-    public Object transform(ResultSet rs, Object... otherParams) {
+    public Object transform(ResultSet rs) {
         if (rs == null || this.beanClass == null) {
             return null;
         }

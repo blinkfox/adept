@@ -22,11 +22,10 @@ public class SingleHandler implements ResultHandler<Object> {
     /**
      * 将'ResultSet'结果集的第一行、第一列的单个数据转换为'单个Object对象'的方法.
      * @param rs ResultSet实例
-     * @param otherParams 其他参数
      * @return Object对象
      */
     @Override
-    public Object transform(ResultSet rs, Object... otherParams) {
+    public Object transform(ResultSet rs) {
         if (rs == null) {
             return null;
         }

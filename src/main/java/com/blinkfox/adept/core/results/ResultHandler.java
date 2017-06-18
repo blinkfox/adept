@@ -11,9 +11,8 @@ public interface ResultHandler<T> {
     /**
      * 将结果集转换为泛型T类型结果的方法.
      * @param rs ResultSet实例
-     * @param otherParams 其他参数
      * @return 泛型T的实例
      */
-    T transform(ResultSet rs, Object... otherParams);
+    T transform(ResultSet rs);
 
 }

@@ -28,11 +28,10 @@ public class MapListHandler implements ResultHandler<List<Map<String, Object>>> 
     /**
      * 将'ResultSet'结果集转换为'Map的List集合'的方法.
      * @param rs ResultSet实例
-     * @param otherParams 其他参数
      * @return Map的List集合
      */
     @Override
-    public List<Map<String, Object>> transform(ResultSet rs, Object... otherParams) {
+    public List<Map<String, Object>> transform(ResultSet rs) {
         if (rs == null) {
             return null;
         }
