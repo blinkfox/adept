@@ -138,7 +138,7 @@ public class AdeptTest {
     @Test
     public void testToColumnList() {
         List<Object> nickNames = Adept.quickStart()
-                .query(ALL_USER_SQL)
+                .query("SELECT c_name, c_nickname FROM t_user")
                 .end(ColumnsHandler.newInstance());
         Assert.assertNotNull(nickNames);
         log.info(nickNames.toString());

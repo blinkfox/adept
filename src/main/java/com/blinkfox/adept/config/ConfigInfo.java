@@ -1,6 +1,7 @@
 package com.blinkfox.adept.config;
 
-import com.zaxxer.hikari.HikariConfig;
+import com.blinkfox.adept.datasource.DataSourceConfig;
+import com.blinkfox.adept.datasource.HikariDataSourceConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 
@@ -13,8 +14,8 @@ public final class ConfigInfo {
     /* ConfigInfo的唯一实例 */
     private static final ConfigInfo configInfo = new ConfigInfo();
 
-    /* 数据源 */
-    private DataSource dataSource;
+    /** 数据源配置信息. */
+    private DataSourceConfig dsConfig;
 
     /**
      * 私有构造方法.
@@ -36,21 +37,18 @@ public final class ConfigInfo {
      * @return HikariDataSource实例
      */
     public HikariDataSource useDefaultDataSource(String driver, String url, String user, String password) {
-        HikariConfig config = new HikariConfig();
-        config.setDriverClassName(driver);
-        config.setJdbcUrl(url);
-        config.setUsername(user);
-        config.setPassword(password);
-        HikariDataSource hds = new HikariDataSource(config);
-        this.setDataSource(hds);
-        return hds;
+        HikariDataSourceConfig.newInstance().buildDataSource(driver, url, user, password).saveConfig();
+        return (HikariDataSource) dsConfig.getDataSource();
     }
 
     /**
-     * 清除配置信息.
+     * 关闭数据源，清除数据源配置信息.
      */
-    public void clear() {
-        dataSource = null;
+    void clear() {
+        if (dsConfig != null) {
+            dsConfig.close();
+            dsConfig = null;
+        }
     }
 
     /**
@@ -58,15 +56,23 @@ public final class ConfigInfo {
      * @return 数据源
      */
     public DataSource getDataSource() {
-        return dataSource;
+        return dsConfig.getDataSource();
     }
 
     /**
-     * 仅仅子类可设置数据源的setter方法.
-     * @param dataSource 数据源
+     * 获取数据源配置信息的多态实例.
+     * @return DataSourceConfig多态实例
      */
-    protected void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public DataSourceConfig getDsConfig() {
+        return dsConfig;
+    }
+
+    /**
+     * 通过setter方法,设置数据源配置信息实例.
+     * @param dsConfig DataSourceConfig多态实例
+     */
+    public void setDsConfig(DataSourceConfig dsConfig) {
+        this.dsConfig = dsConfig;
     }
 
 }
