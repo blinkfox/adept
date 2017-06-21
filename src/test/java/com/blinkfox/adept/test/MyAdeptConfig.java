@@ -18,7 +18,7 @@ public class MyAdeptConfig extends AbstractAdeptConfig {
      */
     @Override
     public void configDataSource(ConfigInfo info) {
-        Properties props = PropHelper.INSTANCE.loadPropFile("config.properties");
+        Properties props = PropHelper.newInstance().loadPropFile("config.properties");
         HikariDataSource hds = info.useDefaultDataSource(props.getProperty("driver"), props.getProperty("url"),
                 props.getProperty("username"), props.getProperty("password"));
         hds.setMaximumPoolSize(20);
