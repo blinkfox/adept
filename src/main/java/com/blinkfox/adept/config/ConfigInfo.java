@@ -1,8 +1,7 @@
 package com.blinkfox.adept.config;
 
 import com.blinkfox.adept.datasource.DataSourceConfig;
-import com.blinkfox.adept.datasource.HikariDataSourceConfig;
-import com.zaxxer.hikari.HikariDataSource;
+
 import javax.sql.DataSource;
 
 /**
@@ -33,18 +32,9 @@ public final class ConfigInfo {
     }
 
     /**
-     * 使用默认的数据库连接池.
-     * @return HikariDataSource实例
-     */
-    public HikariDataSource useDefaultDataSource(String driver, String url, String user, String password) {
-        HikariDataSourceConfig.newInstance().buildDataSource(driver, url, user, password).saveConfig();
-        return (HikariDataSource) dsConfig.getDataSource();
-    }
-
-    /**
      * 关闭数据源，清除数据源配置信息.
      */
-    void clear() {
+    public void clear() {
         if (dsConfig != null) {
             dsConfig.close();
             dsConfig = null;
@@ -57,14 +47,6 @@ public final class ConfigInfo {
      */
     public DataSource getDataSource() {
         return dsConfig.getDataSource();
-    }
-
-    /**
-     * 获取数据源配置信息的多态实例.
-     * @return DataSourceConfig多态实例
-     */
-    public DataSourceConfig getDsConfig() {
-        return dsConfig;
     }
 
     /**

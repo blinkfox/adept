@@ -22,11 +22,6 @@ public abstract class DataSourceConfig {
     public abstract DataSourceConfig buildDataSource(String driver, String url, String user, String password);
 
     /**
-     * 保存配置信息到内存缓存中.
-     */
-    public abstract void saveConfig();
-
-    /**
      * 关闭数据源,清楚缓存信息.
      */
     public abstract void close();

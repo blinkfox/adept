@@ -23,19 +23,23 @@ public final class ClassHelper {
      * @return 泛型T
      */
     public static Object newInstanceByClass(Class<?> clazz) {
+        if (clazz == null) {
+            throw new AdeptRuntimeException("需要实例化的class为null.");
+        }
+
         try {
             Constructor constructor = clazz.getDeclaredConstructor();
             constructor.setAccessible(true);
             return clazz.newInstance();
         } catch (Exception e) {
-            throw new AdeptRuntimeException("实例化class出错！", e);
+            throw new AdeptRuntimeException("实例化class出错！class为:{}" + clazz.getName(), e);
         }
     }
 
     /**
      * 根据class生成该class对应类的新实例.
      * @param className 类全路径名
-     * @return 泛型T
+     * @return 对象
      */
     public static Object newInstanceByClassName(String className) {
         try {

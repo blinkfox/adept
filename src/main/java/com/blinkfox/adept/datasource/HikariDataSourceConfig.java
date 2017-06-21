@@ -14,13 +14,6 @@ public class HikariDataSourceConfig extends DataSourceConfig {
     private HikariDataSource hikariDataSource;
 
     /**
-     * 私有构造方法.
-     */
-    private HikariDataSourceConfig() {
-        super();
-    }
-
-    /**
      * 获取新的实例.
      * @return HikariDataSourceConfig实例
      */
@@ -44,15 +37,8 @@ public class HikariDataSourceConfig extends DataSourceConfig {
         config.setPassword(password);
         this.hikariDataSource = new HikariDataSource(config);
         super.setDataSource(hikariDataSource);
-        return this;
-    }
-
-    /**
-     * 保存HikariCP数据源的配置信息到内存缓存中.
-     */
-    @Override
-    public void saveConfig() {
         ConfigInfo.getInstance().setDsConfig(this);
+        return this;
     }
 
     /**

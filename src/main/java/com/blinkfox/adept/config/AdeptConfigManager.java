@@ -1,5 +1,6 @@
 package com.blinkfox.adept.config;
 
+import com.blinkfox.adept.datasource.DataSourceFactory;
 import com.blinkfox.adept.exception.LoadAdeptConfigException;
 import com.blinkfox.adept.helpers.ClassHelper;
 
@@ -14,9 +15,6 @@ public class AdeptConfigManager {
 
     /* AdeptConfigManager的唯一实例 */
     private static final AdeptConfigManager manager = new AdeptConfigManager();
-
-    /* 配置信息 */
-    private static final ConfigInfo configInfo = ConfigInfo.getInstance();
 
     private static final Logger log = LoggerFactory.getLogger(AdeptConfigManager.class);
 
@@ -56,7 +54,7 @@ public class AdeptConfigManager {
      * 从内存缓存中清楚Adept的相关数据.
      */
     public void destroy() {
-        configInfo.clear();
+        ConfigInfo.getInstance().clear();
         log.info("清除了Adept的配置信息！");
     }
 
@@ -82,7 +80,7 @@ public class AdeptConfigManager {
      * @param config 配置类
      */
     private void load(AbstractAdeptConfig config) {
-        config.configDataSource(configInfo);
+        config.configDataSource(DataSourceFactory.newInstance());
     }
 
 }

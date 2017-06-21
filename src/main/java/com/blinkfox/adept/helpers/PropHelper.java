@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  * Properties属性读取工具类.
  * @author blinkfox on 2017/5/21.
  */
-public class PropHelper {
+public final class PropHelper {
 
     /** Properties属性. */
     private Properties props;
