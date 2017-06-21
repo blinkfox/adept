@@ -11,7 +11,7 @@ import com.zaxxer.hikari.HikariDataSource;
 public class HikariDataSourceConfig extends DataSourceConfig {
 
     /** HikariCP数据源实例. */
-    private HikariDataSource hikariDataSource;
+    private HikariDataSource dataSource;
 
     /**
      * 获取新的实例.
@@ -35,8 +35,8 @@ public class HikariDataSourceConfig extends DataSourceConfig {
         config.setJdbcUrl(url);
         config.setUsername(user);
         config.setPassword(password);
-        this.hikariDataSource = new HikariDataSource(config);
-        super.setDataSource(hikariDataSource);
+        this.dataSource = new HikariDataSource(config);
+        super.setDataSource(dataSource);
         ConfigInfo.getInstance().setDsConfig(this);
         return this;
     }
@@ -46,8 +46,8 @@ public class HikariDataSourceConfig extends DataSourceConfig {
      */
     @Override
     public void close() {
-        if (hikariDataSource != null) {
-            hikariDataSource.close();
+        if (dataSource != null) {
+            dataSource.close();
         }
     }
 

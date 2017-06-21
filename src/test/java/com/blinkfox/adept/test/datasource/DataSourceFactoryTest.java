@@ -1,5 +1,6 @@
 package com.blinkfox.adept.test.datasource;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.blinkfox.adept.config.ConfigInfo;
 import com.blinkfox.adept.datasource.DataSourceFactory;
 import com.blinkfox.adept.datasource.HikariDataSourceConfig;
@@ -54,6 +55,16 @@ public class DataSourceFactoryTest {
         HikariDataSource hds = dsFactory.buildHikariDataSource(props.getProperty("driver"), props.getProperty("url"),
                 props.getProperty("username"), props.getProperty("password"));
         Assert.assertNotNull(hds);
+    }
+
+    /**
+     * 测试构建Druid的数据源.
+     */
+    @Test
+    public void testBuildDruidDataSource() {
+        DruidDataSource dds = dsFactory.buildDruidDataSource(props.getProperty("driver"), props.getProperty("url"),
+                props.getProperty("username"), props.getProperty("password"));
+        Assert.assertNotNull(dds);
     }
 
     /**

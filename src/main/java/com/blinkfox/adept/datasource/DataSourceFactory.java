@@ -1,5 +1,6 @@
 package com.blinkfox.adept.datasource;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.blinkfox.adept.helpers.ClassHelper;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -39,9 +40,17 @@ public final class DataSourceFactory {
      * @return HikariDataSource实例
      */
     public HikariDataSource buildHikariDataSource(String driver, String url, String user, String password) {
-        return (HikariDataSource) HikariDataSourceConfig.newInstance()
-                .buildDataSource(driver, url, user, password)
-                .getDataSource();
+        return (HikariDataSource) this.buildDataSource(HikariDataSourceConfig.newInstance(),
+                driver, url, user, password);
+    }
+
+    /**
+     * 构建并返回DruidDataSource实例.
+     * @return DruidDataSource实例
+     */
+    public DruidDataSource buildDruidDataSource(String driver, String url, String user, String password) {
+        return (DruidDataSource) this.buildDataSource(DruidDataSourceConfig.newInstance(),
+                driver, url, user, password);
     }
 
     /**
@@ -51,6 +60,15 @@ public final class DataSourceFactory {
     public DataSource buildDataSource(Class<? extends DataSourceConfig> dsClass,
             String driver, String url, String user, String password) {
         DataSourceConfig dsConfig = (DataSourceConfig) ClassHelper.newInstanceByClass(dsClass);
+        return this.buildDataSource(dsConfig, driver, url, user, password);
+    }
+
+    /**
+     * 构建并返回自定义的DataSource实例.
+     * @return 自定义的DataSource实例
+     */
+    public DataSource buildDataSource(DataSourceConfig dsConfig,
+            String driver, String url, String user, String password) {
         return dsConfig.buildDataSource(driver, url, user, password).getDataSource();
     }
 
