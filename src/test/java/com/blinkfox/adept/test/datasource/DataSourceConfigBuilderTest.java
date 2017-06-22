@@ -2,7 +2,7 @@ package com.blinkfox.adept.test.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.blinkfox.adept.config.ConfigInfo;
-import com.blinkfox.adept.datasource.DataSourceFactory;
+import com.blinkfox.adept.datasource.DataSourceConfigBuilder;
 import com.blinkfox.adept.datasource.HikariDataSourceConfig;
 import com.blinkfox.adept.helpers.PropHelper;
 import com.zaxxer.hikari.HikariDataSource;
@@ -20,10 +20,10 @@ import org.junit.Test;
  * DataSourceFactory 的单元测试类.
  * Created by blinkfox on 2017/6/21.
  */
-public class DataSourceFactoryTest {
+public class DataSourceConfigBuilderTest {
 
     /** DataSourceFactory全局实例. */
-    private static DataSourceFactory dsFactory;
+    private static DataSourceConfigBuilder dsBuilder;
 
     /** Properties全局实例. */
     private static Properties props;
@@ -33,7 +33,7 @@ public class DataSourceFactoryTest {
      */
     @BeforeClass
     public static void init() {
-        dsFactory = DataSourceFactory.newInstance();
+        dsBuilder = DataSourceConfigBuilder.newInstance();
         props = PropHelper.newInstance().loadPropFile("config.properties");
     }
 
@@ -42,7 +42,7 @@ public class DataSourceFactoryTest {
      */
     @Test
     public void testBuildDefaultDataSource() {
-        HikariDataSource hds = dsFactory.buildDefaultDataSource(props.getProperty("driver"), props.getProperty("url"),
+        HikariDataSource hds = dsBuilder.buildDefaultDataSource(props.getProperty("driver"), props.getProperty("url"),
                 props.getProperty("username"), props.getProperty("password"));
         Assert.assertNotNull(hds);
     }
@@ -52,7 +52,7 @@ public class DataSourceFactoryTest {
      */
     @Test
     public void testBuildHikariDataSource() {
-        HikariDataSource hds = dsFactory.buildHikariDataSource(props.getProperty("driver"), props.getProperty("url"),
+        HikariDataSource hds = dsBuilder.buildHikariDataSource(props.getProperty("driver"), props.getProperty("url"),
                 props.getProperty("username"), props.getProperty("password"));
         Assert.assertNotNull(hds);
     }
@@ -62,7 +62,7 @@ public class DataSourceFactoryTest {
      */
     @Test
     public void testBuildDruidDataSource() {
-        DruidDataSource dds = dsFactory.buildDruidDataSource(props.getProperty("driver"), props.getProperty("url"),
+        DruidDataSource dds = dsBuilder.buildDruidDataSource(props.getProperty("driver"), props.getProperty("url"),
                 props.getProperty("username"), props.getProperty("password"));
         Assert.assertNotNull(dds);
     }
@@ -72,9 +72,9 @@ public class DataSourceFactoryTest {
      */
     @Test
     public void testBuildDataSource() {
-        DataSource ds = dsFactory.buildDataSource(HikariDataSourceConfig.class,
-                props.getProperty("driver"), props.getProperty("url"), props.getProperty("username"),
-                props.getProperty("password"));
+        DataSource ds = dsBuilder.buildDataSource(HikariDataSourceConfig.class, HikariDataSourceConfig.newInstance()
+                .buildDataSource(props.getProperty("driver"), props.getProperty("url"), props.getProperty("username"),
+                props.getProperty("password")));
         Assert.assertNotNull(ds);
     }
 
@@ -91,7 +91,7 @@ public class DataSourceFactoryTest {
      */
     @AfterClass
     public static void destroy() {
-        dsFactory = null;
+        dsBuilder = null;
     }
 
 }

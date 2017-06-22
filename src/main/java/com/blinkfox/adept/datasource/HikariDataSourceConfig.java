@@ -1,8 +1,10 @@
 package com.blinkfox.adept.datasource;
 
-import com.blinkfox.adept.config.ConfigInfo;
+import com.blinkfox.adept.exception.AdeptRuntimeException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
+import javax.sql.DataSource;
 
 /**
  * HikariCP数据库连接池的配置实现类.
@@ -10,7 +12,7 @@ import com.zaxxer.hikari.HikariDataSource;
  */
 public class HikariDataSourceConfig extends DataSourceConfig {
 
-    /** HikariCP数据源实例. */
+    /** HikariCP数据源. */
     private HikariDataSource dataSource;
 
     /**
@@ -22,23 +24,32 @@ public class HikariDataSourceConfig extends DataSourceConfig {
     }
 
     /**
-     * 通过基础配置信息构建数据源信息.
+     * 通过基础配置信息构建Hikari数据源信息.
      * @param driver 数据库连接的JDBC驱动
      * @param url 数据库连接的url
      * @param user 数据库连接的用户名
      * @param password 数据库连接的密码
      */
-    @Override
-    public HikariDataSourceConfig buildDataSource(String driver, String url, String user, String password) {
+    public HikariDataSource buildDataSource(String driver, String url, String user, String password) {
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(driver);
         config.setJdbcUrl(url);
         config.setUsername(user);
         config.setPassword(password);
-        this.dataSource = new HikariDataSource(config);
-        super.setDataSource(dataSource);
-        ConfigInfo.getInstance().setDsConfig(this);
-        return this;
+        return new HikariDataSource(config);
+    }
+
+    /**
+     * 保存数据源到配置信息中.
+     * @param dataSource 数据源.
+     */
+    @Override
+    public void saveDataSource(DataSource dataSource) {
+        if (dataSource instanceof HikariDataSource) {
+            this.dataSource = (HikariDataSource) dataSource;
+        } else {
+            throw new AdeptRuntimeException("saveDataSource参数非DruidDataSource实例.");
+        }
     }
 
     /**

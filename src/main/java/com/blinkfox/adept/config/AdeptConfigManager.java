@@ -1,6 +1,6 @@
 package com.blinkfox.adept.config;
 
-import com.blinkfox.adept.datasource.DataSourceFactory;
+import com.blinkfox.adept.datasource.DataSourceConfigBuilder;
 import com.blinkfox.adept.exception.LoadAdeptConfigException;
 import com.blinkfox.adept.helpers.ClassHelper;
 
@@ -80,7 +80,7 @@ public class AdeptConfigManager {
      * @param config 配置类
      */
     private void load(AbstractAdeptConfig config) {
-        config.configDataSource(DataSourceFactory.newInstance());
+        config.configDataSource(DataSourceConfigBuilder.newInstance());
     }
 
 }

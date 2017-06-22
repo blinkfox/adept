@@ -12,14 +12,10 @@ public abstract class DataSourceConfig {
     private DataSource dataSource;
 
     /**
-     * 通过基础配置信息设置数据源并返回.
-     * @param driver 数据库连接的JDBC驱动
-     * @param url 数据库连接的url
-     * @param user 数据库连接的用户名
-     * @param password 数据库连接的密码
-     * @return 数据源
+     * 保存数据源到配置信息中.
+     * @param dataSource 数据源
      */
-    public abstract DataSourceConfig buildDataSource(String driver, String url, String user, String password);
+    public abstract void saveDataSource(DataSource dataSource);
 
     /**
      * 关闭数据源,清楚缓存信息.
@@ -32,14 +28,6 @@ public abstract class DataSourceConfig {
      */
     public DataSource getDataSource() {
         return dataSource;
-    }
-
-    /**
-     * 设置并返回数据源.
-     * @param dataSource 数据源实例
-     */
-    protected void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
     }
 
 }

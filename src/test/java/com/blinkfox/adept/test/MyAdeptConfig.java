@@ -1,7 +1,7 @@
 package com.blinkfox.adept.test;
 
 import com.blinkfox.adept.config.AbstractAdeptConfig;
-import com.blinkfox.adept.datasource.DataSourceFactory;
+import com.blinkfox.adept.datasource.DataSourceConfigBuilder;
 import com.blinkfox.adept.helpers.PropHelper;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -17,7 +17,7 @@ public class MyAdeptConfig extends AbstractAdeptConfig {
      * 配置数据库连接池.
      */
     @Override
-    public void configDataSource(DataSourceFactory dsFactory) {
+    public void configDataSource(DataSourceConfigBuilder dsFactory) {
         Properties props = PropHelper.newInstance().loadPropFile("config.properties");
         HikariDataSource hds = dsFactory.buildDefaultDataSource(props.getProperty("driver"), props.getProperty("url"),
                 props.getProperty("username"), props.getProperty("password"));
