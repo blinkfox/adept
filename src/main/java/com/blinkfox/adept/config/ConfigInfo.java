@@ -36,7 +36,9 @@ public final class ConfigInfo {
      */
     public void clear() {
         if (dsConfig != null) {
-            dsConfig.close();
+            if (dsConfig.getDataSource() != null) {
+                dsConfig.close();
+            }
             dsConfig = null;
         }
     }

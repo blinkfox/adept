@@ -25,6 +25,12 @@ public class DataSourceConfigBuilderTest {
     /** DataSourceFactory全局实例. */
     private static DataSourceConfigBuilder dsBuilder;
 
+    /** HikariDataSource实例. */
+    private static HikariDataSource hds;
+
+    /** DruidDataSource实例. */
+    private static DruidDataSource dds;
+
     /** Properties全局实例. */
     private static Properties props;
 
@@ -35,6 +41,10 @@ public class DataSourceConfigBuilderTest {
     public static void init() {
         dsBuilder = DataSourceConfigBuilder.newInstance();
         props = PropHelper.newInstance().loadPropFile("config.properties");
+        hds = dsBuilder.buildHikariDataSource(props.getProperty("driver"), props.getProperty("url"),
+                props.getProperty("username"), props.getProperty("password"));
+        dds = dds = dsBuilder.buildDruidDataSource(props.getProperty("driver"), props.getProperty("url"),
+                props.getProperty("username"), props.getProperty("password"));
     }
 
     /**
@@ -52,9 +62,7 @@ public class DataSourceConfigBuilderTest {
      */
     @Test
     public void testBuildHikariDataSource() {
-        HikariDataSource hds = dsBuilder.buildHikariDataSource(props.getProperty("driver"), props.getProperty("url"),
-                props.getProperty("username"), props.getProperty("password"));
-        Assert.assertNotNull(hds);
+        Assert.assertNotNull(dsBuilder.buildHikariDataSource(hds));
     }
 
     /**
@@ -62,19 +70,28 @@ public class DataSourceConfigBuilderTest {
      */
     @Test
     public void testBuildDruidDataSource() {
-        DruidDataSource dds = dsBuilder.buildDruidDataSource(props.getProperty("driver"), props.getProperty("url"),
-                props.getProperty("username"), props.getProperty("password"));
-        Assert.assertNotNull(dds);
+        Assert.assertNotNull(dsBuilder.buildDruidDataSource(dds));
     }
 
     /**
      * 测试构建默认的数据源.
      */
     @Test
-    public void testBuildDataSource() {
+    public void testSaveDataSource() {
         DataSource ds = dsBuilder.saveDataSource(HikariDataSourceConfig.class, HikariDataSourceConfig.newInstance()
                 .buildDataSource(props.getProperty("driver"), props.getProperty("url"), props.getProperty("username"),
                 props.getProperty("password")));
+        Assert.assertNotNull(ds);
+    }
+
+    /**
+     * 测试构建默认的数据源.
+     */
+    @Test
+    public void testSaveDataSource2() {
+        DataSource ds = dsBuilder.saveDataSource(HikariDataSourceConfig.newInstance(), HikariDataSourceConfig.newInstance()
+                .buildDataSource(props.getProperty("driver"), props.getProperty("url"), props.getProperty("username"),
+                        props.getProperty("password")));
         Assert.assertNotNull(ds);
     }
 
