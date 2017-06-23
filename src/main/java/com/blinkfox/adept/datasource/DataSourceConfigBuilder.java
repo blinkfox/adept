@@ -57,7 +57,7 @@ public final class DataSourceConfigBuilder {
      * @param dataSource 数据源
      * @return HikariDataSource实例
      */
-    private HikariDataSource buildHikariDataSource(DataSource dataSource) {
+    public HikariDataSource buildHikariDataSource(DataSource dataSource) {
         return (HikariDataSource) this.buildDataSource(HikariDataSourceConfig.newInstance(), dataSource);
     }
 
@@ -79,7 +79,7 @@ public final class DataSourceConfigBuilder {
      * @param dataSource 数据源
      * @return HikariDataSource实例
      */
-    private DruidDataSource buildDruidDataSource(DataSource dataSource) {
+    public DruidDataSource buildDruidDataSource(DataSource dataSource) {
         return (DruidDataSource) this.buildDataSource(DruidDataSourceConfig.newInstance(), dataSource);
     }
 
@@ -98,7 +98,7 @@ public final class DataSourceConfigBuilder {
      * @param dataSource 数据源
      */
     public DataSource buildDataSource(DataSourceConfig dsConfig, DataSource dataSource) {
-        dsConfig.saveDataSource(dataSource);
+        dsConfig.setDataSource(dataSource);
         ConfigInfo.getInstance().setDsConfig(dsConfig);
         return dataSource;
     }

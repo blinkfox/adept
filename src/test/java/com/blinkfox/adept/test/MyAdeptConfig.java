@@ -17,9 +17,9 @@ public class MyAdeptConfig extends AbstractAdeptConfig {
      * 配置数据库连接池.
      */
     @Override
-    public void configDataSource(DataSourceConfigBuilder dsFactory) {
+    public void configDataSource(DataSourceConfigBuilder builder) {
         Properties props = PropHelper.newInstance().loadPropFile("config.properties");
-        HikariDataSource hds = dsFactory.buildDefaultDataSource(props.getProperty("driver"), props.getProperty("url"),
+        HikariDataSource hds = builder.buildDefaultDataSource(props.getProperty("driver"), props.getProperty("url"),
                 props.getProperty("username"), props.getProperty("password"));
         hds.setMaximumPoolSize(20);
     }

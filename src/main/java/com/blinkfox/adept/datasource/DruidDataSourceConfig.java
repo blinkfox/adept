@@ -9,7 +9,7 @@ import javax.sql.DataSource;
  * Druid数据库连接池的配置实现类.
  * Created by blinkfox on 2017/6/22.
  */
-public class DruidDataSourceConfig extends DataSourceConfig {
+public class DruidDataSourceConfig implements DataSourceConfig {
 
     /** Druid数据源实例. */
     private DruidDataSource dataSource;
@@ -39,16 +39,25 @@ public class DruidDataSourceConfig extends DataSourceConfig {
     }
 
     /**
-     * 保存数据源到配置信息中.
+     * 设置Druid数据源到配置信息中.
      * @param dataSource 数据源.
      */
     @Override
-    public void saveDataSource(DataSource dataSource) {
+    public void setDataSource(DataSource dataSource) {
         if (dataSource instanceof DruidDataSource) {
             this.dataSource = (DruidDataSource) dataSource;
         } else {
-            throw new AdeptRuntimeException("saveDataSource参数非DruidDataSource实例.");
+            throw new AdeptRuntimeException("setDataSource参数非DruidDataSource实例.");
         }
+    }
+
+    /**
+     * 获取Druid数据源.
+     * @return 数据源实例
+     */
+    @Override
+    public DataSource getDataSource() {
+        return null;
     }
 
     /**

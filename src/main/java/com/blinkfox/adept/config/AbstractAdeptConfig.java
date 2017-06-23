@@ -11,6 +11,6 @@ public abstract class AbstractAdeptConfig {
     /**
      * 配置数据库连接池.
      */
-    protected abstract void configDataSource(DataSourceConfigBuilder dsFactory);
+    protected abstract void configDataSource(DataSourceConfigBuilder builder);
 
 }

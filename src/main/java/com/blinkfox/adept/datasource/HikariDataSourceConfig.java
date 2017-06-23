@@ -10,7 +10,7 @@ import javax.sql.DataSource;
  * HikariCP数据库连接池的配置实现类.
  * @author blinkfox on 2017/6/19.
  */
-public class HikariDataSourceConfig extends DataSourceConfig {
+public class HikariDataSourceConfig implements DataSourceConfig {
 
     /** HikariCP数据源. */
     private HikariDataSource dataSource;
@@ -40,20 +40,29 @@ public class HikariDataSourceConfig extends DataSourceConfig {
     }
 
     /**
-     * 保存数据源到配置信息中.
+     * 设置Hikari数据源到配置信息中.
      * @param dataSource 数据源.
      */
     @Override
-    public void saveDataSource(DataSource dataSource) {
+    public void setDataSource(DataSource dataSource) {
         if (dataSource instanceof HikariDataSource) {
             this.dataSource = (HikariDataSource) dataSource;
         } else {
-            throw new AdeptRuntimeException("saveDataSource参数非DruidDataSource实例.");
+            throw new AdeptRuntimeException("setDataSource参数非DruidDataSource实例.");
         }
     }
 
     /**
-     * 关闭HikariCP数据源.
+     * 获取Hikari数据源.
+     * @return 数据源实例
+     */
+    @Override
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    /**
+     * 关闭Hikari数据源.
      */
     @Override
     public void close() {
