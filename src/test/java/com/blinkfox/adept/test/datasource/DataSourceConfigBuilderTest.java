@@ -5,6 +5,7 @@ import com.blinkfox.adept.config.ConfigInfo;
 import com.blinkfox.adept.datasource.DataSourceConfigBuilder;
 import com.blinkfox.adept.datasource.HikariDataSourceConfig;
 import com.blinkfox.adept.helpers.PropHelper;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.util.Properties;
@@ -35,6 +36,9 @@ public class DataSourceConfigBuilderTest {
     /** Dbcp数据源实例. */
     private static BasicDataSource dbcpDs;
 
+    /** C3P0数据源实例. */
+    private static ComboPooledDataSource c3p0Ds;
+
     /** Properties全局实例. */
     private static Properties props;
 
@@ -50,6 +54,8 @@ public class DataSourceConfigBuilderTest {
         dds = dsBuilder.buildDruidDataSource(props.getProperty("driver"), props.getProperty("url"),
                 props.getProperty("username"), props.getProperty("password"));
         dbcpDs = dsBuilder.buildDbcpDataSource(props.getProperty("driver"), props.getProperty("url"),
+                props.getProperty("username"), props.getProperty("password"));
+        c3p0Ds = dsBuilder.buildC3p0DataSource(props.getProperty("driver"), props.getProperty("url"),
                 props.getProperty("username"), props.getProperty("password"));
     }
 
@@ -85,6 +91,14 @@ public class DataSourceConfigBuilderTest {
     @Test
     public void testBuildDbcpDataSource() {
         Assert.assertNotNull(dsBuilder.buildDbcpDataSource(dbcpDs));
+    }
+
+    /**
+     * 测试构建C3P0的数据源.
+     */
+    @Test
+    public void testBuildC3p0DataSource() {
+        Assert.assertNotNull(dsBuilder.buildC3p0DataSource(c3p0Ds));
     }
 
     /**

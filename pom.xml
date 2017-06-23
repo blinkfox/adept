@@ -69,6 +69,12 @@
             <version>1.4</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.5.2</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- 默认使用`HikariCP`作为数据库连接池 -->
         <dependency>

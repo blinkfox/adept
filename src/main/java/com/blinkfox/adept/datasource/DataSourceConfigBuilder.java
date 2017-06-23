@@ -3,6 +3,7 @@ package com.blinkfox.adept.datasource;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.blinkfox.adept.config.ConfigInfo;
 import com.blinkfox.adept.helpers.ClassHelper;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
@@ -97,11 +98,32 @@ public final class DataSourceConfigBuilder {
 
     /**
      * 将`BasicDataSource`数据源保存到配置信息中.
-     * @param dataSource Druid数据源
-     * @return DruidDataSource实例
+     * @param dataSource DBCP数据源
+     * @return BasicDataSource实例
      */
     public BasicDataSource buildDbcpDataSource(BasicDataSource dataSource) {
         return this.saveDataSource(DbcpDataSourceConfig.newInstance(), dataSource);
+    }
+
+    /**
+     * 通过数据库连接基础信息构建`ComboPooledDataSource`数据源并保存到配置信息中.
+     * @param driver 数据库连接的JDBC驱动
+     * @param url 数据库连接的url
+     * @param user 数据库连接的用户名
+     * @param password 数据库连接的密码
+     */
+    public ComboPooledDataSource buildC3p0DataSource(String driver, String url, String user, String password) {
+        C3p0DataSourceConfig c3p0Config = C3p0DataSourceConfig.newInstance();
+        return this.saveDataSource(c3p0Config, c3p0Config.buildDataSource(driver, url, user, password));
+    }
+
+    /**
+     * 将`ComboPooledDataSource`数据源保存到配置信息中.
+     * @param dataSource C3P0数据源
+     * @return ComboPooledDataSource实例
+     */
+    public ComboPooledDataSource buildC3p0DataSource(ComboPooledDataSource dataSource) {
+        return this.saveDataSource(C3p0DataSourceConfig.newInstance(), dataSource);
     }
 
     /**
