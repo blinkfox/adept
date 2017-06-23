@@ -63,6 +63,12 @@
             <version>1.0.31</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- 默认使用`HikariCP`作为数据库连接池 -->
         <dependency>

@@ -10,6 +10,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.util.Properties;
 import javax.sql.DataSource;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -31,6 +32,9 @@ public class DataSourceConfigBuilderTest {
     /** DruidDataSource实例. */
     private static DruidDataSource dds;
 
+    /** Dbcp数据源实例. */
+    private static BasicDataSource dbcpDs;
+
     /** Properties全局实例. */
     private static Properties props;
 
@@ -43,7 +47,9 @@ public class DataSourceConfigBuilderTest {
         props = PropHelper.newInstance().loadPropFile("config.properties");
         hds = dsBuilder.buildHikariDataSource(props.getProperty("driver"), props.getProperty("url"),
                 props.getProperty("username"), props.getProperty("password"));
-        dds = dds = dsBuilder.buildDruidDataSource(props.getProperty("driver"), props.getProperty("url"),
+        dds = dsBuilder.buildDruidDataSource(props.getProperty("driver"), props.getProperty("url"),
+                props.getProperty("username"), props.getProperty("password"));
+        dbcpDs = dsBuilder.buildDbcpDataSource(props.getProperty("driver"), props.getProperty("url"),
                 props.getProperty("username"), props.getProperty("password"));
     }
 
@@ -74,6 +80,14 @@ public class DataSourceConfigBuilderTest {
     }
 
     /**
+     * 测试构建DBCP的数据源.
+     */
+    @Test
+    public void testBuildDbcpDataSource() {
+        Assert.assertNotNull(dsBuilder.buildDbcpDataSource(dbcpDs));
+    }
+
+    /**
      * 测试构建默认的数据源.
      */
     @Test
@@ -89,9 +103,9 @@ public class DataSourceConfigBuilderTest {
      */
     @Test
     public void testSaveDataSource2() {
-        DataSource ds = dsBuilder.saveDataSource(HikariDataSourceConfig.newInstance(), HikariDataSourceConfig.newInstance()
-                .buildDataSource(props.getProperty("driver"), props.getProperty("url"), props.getProperty("username"),
-                        props.getProperty("password")));
+        DataSource ds = dsBuilder.saveDataSource(HikariDataSourceConfig.newInstance(),
+                HikariDataSourceConfig.newInstance().buildDataSource(props.getProperty("driver"),
+                        props.getProperty("url"), props.getProperty("username"), props.getProperty("password")));
         Assert.assertNotNull(ds);
     }
 

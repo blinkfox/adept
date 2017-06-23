@@ -7,6 +7,8 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.dbcp.BasicDataSource;
+
 /**
  * DataSourceConfig类的工厂类，用于创建多种类别的数据源.
  * Created by blinkfox on 2017/6/21.
@@ -82,7 +84,28 @@ public final class DataSourceConfigBuilder {
     }
 
     /**
-     * 通过DataSourceConfig的子类类class和DataSource数据源保存到配置信息中.
+     * 通过数据库连接基础信息构建`BasicDataSource`数据源并保存到配置信息中.
+     * @param driver 数据库连接的JDBC驱动
+     * @param url 数据库连接的url
+     * @param user 数据库连接的用户名
+     * @param password 数据库连接的密码
+     */
+    public BasicDataSource buildDbcpDataSource(String driver, String url, String user, String password) {
+        DbcpDataSourceConfig dbcpConfig = DbcpDataSourceConfig.newInstance();
+        return this.saveDataSource(dbcpConfig, dbcpConfig.buildDataSource(driver, url, user, password));
+    }
+
+    /**
+     * 将`BasicDataSource`数据源保存到配置信息中.
+     * @param dataSource Druid数据源
+     * @return DruidDataSource实例
+     */
+    public BasicDataSource buildDbcpDataSource(BasicDataSource dataSource) {
+        return this.saveDataSource(DbcpDataSourceConfig.newInstance(), dataSource);
+    }
+
+    /**
+     * 通过`DataSourceConfig`的子类类class和`DataSource`数据源保存到配置信息中.
      * @param dsClass DataSourceConfig的class
      * @param dataSource 数据源
      */
@@ -91,7 +114,7 @@ public final class DataSourceConfigBuilder {
     }
 
     /**
-     * 将DataSourceConfig和DataSource数据源保存到配置信息中.
+     * 将`DataSourceConfig`和`DataSource`数据源保存到配置信息中.
      * @param dsConfig 数据源配置实例
      * @param dataSource 数据源实例
      * @param <C> 数据源配置的泛型C
