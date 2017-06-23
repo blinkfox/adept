@@ -72,7 +72,7 @@ public class DataSourceConfigBuilderTest {
      */
     @Test
     public void testBuildDataSource() {
-        DataSource ds = dsBuilder.buildDataSource(HikariDataSourceConfig.class, HikariDataSourceConfig.newInstance()
+        DataSource ds = dsBuilder.saveDataSource(HikariDataSourceConfig.class, HikariDataSourceConfig.newInstance()
                 .buildDataSource(props.getProperty("driver"), props.getProperty("url"), props.getProperty("username"),
                 props.getProperty("password")));
         Assert.assertNotNull(ds);

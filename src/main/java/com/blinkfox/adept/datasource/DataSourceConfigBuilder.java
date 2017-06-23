@@ -48,8 +48,7 @@ public final class DataSourceConfigBuilder {
      */
     public HikariDataSource buildHikariDataSource(String driver, String url, String user, String password) {
         HikariDataSourceConfig hdsConfig = HikariDataSourceConfig.newInstance();
-        return (HikariDataSource) this.buildDataSource(hdsConfig,
-                hdsConfig.buildDataSource(driver, url, user, password));
+        return this.saveDataSource(hdsConfig, hdsConfig.buildDataSource(driver, url, user, password));
     }
 
     /**
@@ -57,8 +56,8 @@ public final class DataSourceConfigBuilder {
      * @param dataSource 数据源
      * @return HikariDataSource实例
      */
-    public HikariDataSource buildHikariDataSource(DataSource dataSource) {
-        return (HikariDataSource) this.buildDataSource(HikariDataSourceConfig.newInstance(), dataSource);
+    public HikariDataSource buildHikariDataSource(HikariDataSource dataSource) {
+        return this.saveDataSource(HikariDataSourceConfig.newInstance(), dataSource);
     }
 
     /**
@@ -70,17 +69,16 @@ public final class DataSourceConfigBuilder {
      */
     public DruidDataSource buildDruidDataSource(String driver, String url, String user, String password) {
         DruidDataSourceConfig ddsConfig = DruidDataSourceConfig.newInstance();
-        return (DruidDataSource) this.buildDataSource(ddsConfig,
-                ddsConfig.buildDataSource(driver, url, user, password));
+        return this.saveDataSource(ddsConfig, ddsConfig.buildDataSource(driver, url, user, password));
     }
 
     /**
      * 将DruidDataSource数据源保存到配置信息中.
-     * @param dataSource 数据源
-     * @return HikariDataSource实例
+     * @param dataSource Druid数据源
+     * @return DruidDataSource实例
      */
-    public DruidDataSource buildDruidDataSource(DataSource dataSource) {
-        return (DruidDataSource) this.buildDataSource(DruidDataSourceConfig.newInstance(), dataSource);
+    public DruidDataSource buildDruidDataSource(DruidDataSource dataSource) {
+        return this.saveDataSource(DruidDataSourceConfig.newInstance(), dataSource);
     }
 
     /**
@@ -88,16 +86,20 @@ public final class DataSourceConfigBuilder {
      * @param dsClass DataSourceConfig的class
      * @param dataSource 数据源
      */
-    public DataSource buildDataSource(Class<? extends DataSourceConfig> dsClass, DataSource dataSource) {
-        return this.buildDataSource((DataSourceConfig) ClassHelper.newInstanceByClass(dsClass), dataSource);
+    public <C extends DataSourceConfig, D extends DataSource> D saveDataSource(Class<C> dsClass, D dataSource) {
+        return this.saveDataSource((DataSourceConfig) ClassHelper.newInstanceByClass(dsClass), dataSource);
     }
 
     /**
-     * 通过DataSourceConfig实例和DataSource数据源保存到配置信息中.
-     * @param dsConfig DataSourceConfig的子类
-     * @param dataSource 数据源
+     * 将DataSourceConfig和DataSource数据源保存到配置信息中.
+     * @param dsConfig 数据源配置实例
+     * @param dataSource 数据源实例
+     * @param <C> 数据源配置的泛型C
+     * @param <D> 数据源的泛型D
+     * @return 数据源
      */
-    public DataSource buildDataSource(DataSourceConfig dsConfig, DataSource dataSource) {
+    @SuppressWarnings("unchecked")
+    public <C extends DataSourceConfig, D extends DataSource> D saveDataSource(C dsConfig, D dataSource) {
         dsConfig.setDataSource(dataSource);
         ConfigInfo.getInstance().setDsConfig(dsConfig);
         return dataSource;
