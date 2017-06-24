@@ -13,9 +13,6 @@ import org.slf4j.LoggerFactory;
  */
 public class AdeptConfigManager {
 
-    /* AdeptConfigManager的唯一实例 */
-    private static final AdeptConfigManager manager = new AdeptConfigManager();
-
     private static final Logger log = LoggerFactory.getLogger(AdeptConfigManager.class);
 
     /**
@@ -26,11 +23,11 @@ public class AdeptConfigManager {
     }
 
     /**
-     * 获取AdeptConfigManager的唯一实例.
+     * 获取AdeptConfigManager的新实例.
      * @return AdeptConfigManager实例
      */
-    public static AdeptConfigManager getInstance() {
-        return manager;
+    public static AdeptConfigManager newInstance() {
+        return new AdeptConfigManager();
     }
 
     /**
@@ -45,8 +42,9 @@ public class AdeptConfigManager {
     /**
      * 初始化加载Adept的配置信息到内存缓存中.
      * @param clazz Adept的配置类
+     * @param <T> 泛型方法
      */
-    public void initLoad(Class<? extends AbstractAdeptConfig> clazz) {
+    public <T extends AbstractAdeptConfig> void initLoad(Class<T> clazz) {
         this.initLoad(clazz.getName());
     }
 

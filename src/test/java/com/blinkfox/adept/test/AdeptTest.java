@@ -50,7 +50,7 @@ public class AdeptTest {
      */
     @BeforeClass
     public static void init() {
-        AdeptConfigManager.getInstance().initLoad(MyAdeptConfig.class);
+        AdeptConfigManager.newInstance().initLoad(MyAdeptConfig.class);
     }
 
     /**
@@ -262,7 +262,7 @@ public class AdeptTest {
      */
     @AfterClass
     public static void destroy() {
-        AdeptConfigManager.getInstance().destroy();
+        AdeptConfigManager.newInstance().destroy();
     }
 
 }
