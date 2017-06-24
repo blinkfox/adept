@@ -8,9 +8,11 @@ import com.blinkfox.adept.core.results.impl.ColumnsHandler;
 import com.blinkfox.adept.core.results.impl.MapHandler;
 import com.blinkfox.adept.core.results.impl.MapListHandler;
 import com.blinkfox.adept.core.results.impl.SingleHandler;
+import com.blinkfox.adept.helpers.JdbcHelper;
 import com.blinkfox.adept.test.bean.UserInfo;
 
-import java.util.Date;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -67,6 +69,27 @@ public class AdeptTest {
     public void testNewInstance() {
         Adept adept = Adept.newInstance();
         Assert.assertNotNull(adept);
+    }
+
+    /**
+     * 测试获取Connection实例.
+     */
+    @Test
+    public void testGetConnection() {
+        Connection conn = Adept.newInstance().getConnection().getConn();
+        Assert.assertNotNull(conn);
+        JdbcHelper.close(conn);
+    }
+
+    /**
+     * 测试获取PreparedStatement实例.
+     */
+    @Test
+    public void testGetPreparedStatement() {
+        Adept adept = Adept.newInstance();
+        PreparedStatement pstmt = adept.getConnection().getPreparedStatement(USER_BY_AGE_SQL, 26).getPstmt();
+        Assert.assertNotNull(pstmt);
+        adept.closeSource();
     }
 
     /**
@@ -196,14 +219,8 @@ public class AdeptTest {
     public void testEnd2Bean() {
         UserInfo userInfo = Adept.quickStart().query(USER_INFO_SQL, 5).end2Bean(UserInfo.class);
         Assert.assertNotNull(userInfo);
-        UserInfo userInfo2 = Adept.quickStart().query(USER_INFO_SQL, 3).end2Bean(new UserInfo());
+        UserInfo userInfo2 = Adept.quickStart().queryForBean(UserInfo.class, USER_INFO_SQL, 2);
         Assert.assertNotNull(userInfo2);
-        UserInfo userInfo3 = Adept.quickStart().queryForBean(new UserInfo(new Date()), USER_INFO_SQL, 6);
-        Assert.assertNotNull(userInfo3);
-        Assert.assertNotNull(userInfo3.getBirthDate());
-        UserInfo userInfo4 = Adept.quickStart().queryForBean(UserInfo.class, USER_INFO_SQL, 2);
-        Assert.assertNotNull(userInfo4);
-        Assert.assertNull(userInfo4.getBirthDate());
     }
 
     /**

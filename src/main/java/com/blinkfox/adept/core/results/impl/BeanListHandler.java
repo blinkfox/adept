@@ -4,7 +4,6 @@ import com.blinkfox.adept.core.IntrospectorManager;
 import com.blinkfox.adept.core.results.BeanComponent;
 import com.blinkfox.adept.core.results.ResultHandler;
 import com.blinkfox.adept.exception.ResultsTransformException;
-import com.blinkfox.adept.helpers.ClassHelper;
 import com.blinkfox.adept.helpers.JdbcHelper;
 
 import java.beans.PropertyDescriptor;
@@ -21,29 +20,11 @@ import java.util.Map;
 public class BeanListHandler<T> extends BeanComponent<T> implements ResultHandler<List<T>> {
 
     /**
-     * 传入Bean实例的`BeanListHandler`构造方法.
-     * @param bean bean实例
-     */
-    public BeanListHandler(T bean) {
-        this.bean = bean;
-    }
-
-    /**
      * 传入Bean实例class的`BeanListHandler`构造方法.
      * @param beanClass bean实例的class
      */
     public BeanListHandler(Class<T> beanClass) {
-        this.bean = ClassHelper.newInstanceByClass(beanClass);
-    }
-
-    /**
-     * 通过Bean实例来获取新的`BeanListHandler`实例.
-     * @param bean T类的bean
-     * @param <T> 泛型方法
-     * @return BeanHandler实例
-     */
-    public static <T> BeanListHandler<T> newInstance(T bean) {
-        return new BeanListHandler<T>(bean);
+        this.beanClass = beanClass;
     }
 
     /**
@@ -70,13 +51,12 @@ public class BeanListHandler<T> extends BeanComponent<T> implements ResultHandle
         List<T> beanList = new ArrayList<T>();
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
-            Map<String, PropertyDescriptor> propMap = IntrospectorManager.newInstance()
-                    .getPropMap(bean.getClass());
+            Map<String, PropertyDescriptor> propMap = IntrospectorManager.newInstance().getPropMap(beanClass);
             while (rs.next()) {
-                beanList.add(JdbcHelper.getBeanValue(rs, rsmd, bean, propMap));
+                beanList.add(JdbcHelper.getBeanValue(rs, rsmd, beanClass, propMap));
             }
         } catch (Exception e) {
-            throw new ResultsTransformException("将'ResultSet'结果集转换为'Java Bean集合'出错!", e);
+            throw new ResultsTransformException("将'ResultSet'结果集转换为'JavaBean的List集合'出错!", e);
         }
 
         return beanList;

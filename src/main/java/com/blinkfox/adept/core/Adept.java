@@ -25,23 +25,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Adept核心调用类.
+ * 数据库操作的Adept核心调用接口类.
  * @author blinkfox on 2017/6/5.
  */
 public final class Adept {
 
-    /* 配置信息 */
+    /** 配置信息. */
     private static final ConfigInfo configInfo = ConfigInfo.getInstance();
 
     private static final Logger log = LoggerFactory.getLogger(Adept.class);
 
-    /* 数据库连接 */
-    private static Connection conn;
+    /** 数据库连接. */
+    private Connection conn;
 
-    /* PreparedStatement对象引用 */
+    /** PreparedStatement对象. */
     private PreparedStatement pstmt;
 
-    /* ResultSet结果集 */
+    /** ResultSet结果集. */
     private ResultSet rs;
 
     /**
@@ -52,20 +52,27 @@ public final class Adept {
     }
 
     /**
-     * rs的getter方法.
+     * Connection实例引用`conn`的getter方法.
+     * @return Connection实例
+     */
+    public Connection getConn() {
+        return this.conn;
+    }
+
+    /**
+     * PreparedStatement实例引用`pstmt`的getter方法.
+     * @return PreparedStatement实例
+     */
+    public PreparedStatement getPstmt() {
+        return pstmt;
+    }
+
+    /**
+     * ResultSet实例引用`rs`的getter方法.
      * @return ResultSet实例.
      */
     public ResultSet getRs() {
         return rs;
-    }
-
-    /**
-     * rs的setter方法.
-     * @param rs ResultSet实例.
-     */
-    private Adept setRs(ResultSet rs) {
-        this.rs = rs;
-        return this;
     }
 
     /**
@@ -88,10 +95,40 @@ public final class Adept {
     }
 
     /**
+     * 获取数据库连接.
+     * @return Adept实例.
+     */
+    public Adept getConnection() {
+        this.conn = JdbcHelper.getConnection(getDataSource());
+        if (this.conn == null) {
+            throw new NullConnectionException("数据库连接Connection为null");
+        }
+        return this;
+    }
+
+    /**
+     * 获取数据库连接的预编译执行语句PreparedStatement实例.
+     * @param sql SQL语句
+     * @param params SQL对应的有序参数
+     * @return PreparedStatement实例
+     */
+    public Adept getPreparedStatement(String sql, Object... params) {
+        // SQL为空则关闭连接，直接返回Adept实例.
+        if (sql == null || sql.length() == 0) {
+            JdbcHelper.close(this.conn);
+            throw new AdeptRuntimeException("sql语句为空!");
+        }
+
+        log.info("Adept执行的SQL:{}\nAdept执行的SQL对应的参数params:{}", sql, params);
+        this.pstmt = JdbcHelper.getPreparedStatement(this.conn, sql, params);
+        return this;
+    }
+
+    /**
      * 关闭数据库连接等资源.
      */
-    private void closeSource() {
-        JdbcHelper.close(conn, pstmt, rs);
+    public void closeSource() {
+        JdbcHelper.close(this.conn, this.pstmt, this.rs);
     }
 
     /**
@@ -99,12 +136,7 @@ public final class Adept {
      * @return Adept实例.
      */
     public static Adept quickStart() {
-        Adept adept = new Adept();
-        conn = JdbcHelper.getConnection(getDataSource());
-        if (conn == null) {
-            throw new NullConnectionException("数据库连接Connection为null");
-        }
-        return adept;
+        return new Adept().getConnection();
     }
 
     /**
@@ -124,7 +156,7 @@ public final class Adept {
     public <T> T end(ResultHandler<T> handler) {
         // 如果handler不为null，执行转换并返回转换后的结果，最后关闭资源。否则抛出异常.
         if (handler != null) {
-            T t = handler.transform(rs);
+            T t = handler.transform(this.rs);
             this.closeSource();
             return t;
         }
@@ -155,16 +187,6 @@ public final class Adept {
      */
     public List<Map<String, Object>> end2MapList() {
         return this.end(MapListHandler.newInstance());
-    }
-
-    /**
-     * 得到并返回'实体Bean'类型的结果,同时关闭资源.
-     * @param bean 空的Bean实例
-     * @param <T> 泛型方法
-     * @return 含查询结果的Bean实例
-     */
-    public <T> T end2Bean(T bean) {
-        return this.end(new BeanHandler<T>(bean));
     }
 
     /**
@@ -210,22 +232,15 @@ public final class Adept {
      * @return ResultSet实例
      */
     public Adept query(String sql , Object... params) {
-        // SQL为空则关闭连接，直接返回Adept实例.
-        if (sql == null || sql.length() == 0) {
-            JdbcHelper.close(conn);
-            throw new AdeptRuntimeException("sql语句为空!");
-        }
-
         // 根据数据库连接、SQL语句及参数得到PreparedStatement实例，然后再得到ResultSet实例.
-        log.info("Adept执行的SQL:{}\nAdept执行的SQL对应的参数params:{}", sql, params);
-        pstmt = JdbcHelper.getPreparedStatement(conn, sql, params);
-        return this.setRs(JdbcHelper.getQueryResultSet(pstmt));
+        this.rs = JdbcHelper.getQueryResultSet(this.getPreparedStatement(sql, params).getPstmt());
+        return this;
     }
 
     /**
      * 将sql语句的查询结果转换并返回对应ResultHandler的结果类型.
-     * @param handler 结果处理器实例
-     * @param sql SQL语句
+     * @param handler handler
+     * @param sql sql
      * @param params SQL参数
      * @param <T> 泛型方法
      * @return 泛型结果T
@@ -264,18 +279,6 @@ public final class Adept {
      */
     public List<Map<String, Object>> queryForMapList(String sql, Object... params) {
         return this.query(sql, params).end2MapList();
-    }
-
-    /**
-     * 查询sql语句并将结果转换为Bean.
-     * @param bean 实体bean
-     * @param sql SQL语句
-     * @param params SQL参数
-     * @param <T> 泛型Bean
-     * @return bean实例
-     */
-    public <T> T queryForBean(T bean, String sql, Object... params) {
-        return this.query(sql, params).end2Bean(bean);
     }
 
     /**

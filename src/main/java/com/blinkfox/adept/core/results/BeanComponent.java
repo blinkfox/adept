@@ -13,8 +13,8 @@ public abstract class BeanComponent<T> {
 
     private static final Logger log = LoggerFactory.getLogger(BeanComponent.class);
 
-    /* 待转换Bean的属性 */
-    protected T bean;
+    /* 待转换Bean的class */
+    protected Class<T> beanClass;
 
     /**
      * 判断需要转换的数据是否有效.
@@ -27,8 +27,8 @@ public abstract class BeanComponent<T> {
             return false;
         }
 
-        if (this.bean == null) {
-            log.info("要转换的实例bean为null");
+        if (this.beanClass == null) {
+            log.info("要转换的实例bean的class为null");
             return false;
         }
         return true;

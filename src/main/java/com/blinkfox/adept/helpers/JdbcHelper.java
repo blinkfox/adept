@@ -121,17 +121,19 @@ public final class JdbcHelper {
      * 将ResultSet转换为指定class的Bean.
      * @param rs ResultSet实例
      * @param rsmd ResultSet元数据
-     * @param bean 空属性的Bean实例
+     * @param beanClass 空属性的Bean的class
      * @param propMap Bean属性对应的Map
      * @param <T> 泛型方法
      * @return 值
      * @throws IllegalAccessException IllegalAccessException
      * @throws SQLException SQLException
      * @throws InvocationTargetException InvocationTargetException
+     * @throws InstantiationException InstantiationException
      */
-    public static <T> T getBeanValue(ResultSet rs, ResultSetMetaData rsmd, T bean,
+    public static <T> T getBeanValue(ResultSet rs, ResultSetMetaData rsmd, Class<T> beanClass,
             Map<String, PropertyDescriptor> propMap) throws IllegalAccessException, SQLException,
-            InvocationTargetException {
+            InvocationTargetException, InstantiationException {
+        T bean = beanClass.newInstance();
         for (int i = 0, cols = rsmd.getColumnCount(); i < cols; i++) {
             String columnName = JdbcHelper.getColumn(rsmd, i + 1);
             if (propMap.containsKey(columnName)) {
@@ -139,7 +141,7 @@ public final class JdbcHelper {
                 // 获取并调用setter方法.
                 Method propSetter = prop.getWriteMethod();
                 if (propSetter == null || propSetter.getParameterTypes().length != 1) {
-                    log.warn("类'{}'的属性'{}'没有标准的setter方法", bean.getClass().getName(), columnName);
+                    log.warn("类'{}'的属性'{}'没有标准的setter方法", beanClass.getName(), columnName);
                     continue;
                 }
 

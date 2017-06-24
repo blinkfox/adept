@@ -4,7 +4,6 @@ import com.blinkfox.adept.core.IntrospectorManager;
 import com.blinkfox.adept.core.results.BeanComponent;
 import com.blinkfox.adept.core.results.ResultHandler;
 import com.blinkfox.adept.exception.ResultsTransformException;
-import com.blinkfox.adept.helpers.ClassHelper;
 import com.blinkfox.adept.helpers.JdbcHelper;
 
 import java.beans.PropertyDescriptor;
@@ -19,29 +18,11 @@ import java.util.Map;
 public class BeanHandler<T> extends BeanComponent<T> implements ResultHandler<T> {
 
     /**
-     * 传入泛型T的实例的构造方法.
-     * @param bean 泛型T的实例bean
-     */
-    public BeanHandler(T bean) {
-        this.bean = bean;
-    }
-
-    /**
      * 传入泛型T实例的class的构造方法.
      * @param beanClass 泛型T实例的class
      */
     public BeanHandler(Class<T> beanClass) {
-        this.bean = ClassHelper.newInstanceByClass(beanClass);
-    }
-
-    /**
-     * 通过Bean实例创建新的BeanHandler实例.
-     * @param bean T类的bean
-     * @param <T> 泛型方法
-     * @return BeanHandler实例
-     */
-    public static <T> BeanHandler<T> newInstance(T bean) {
-        return new BeanHandler<T>(bean);
+        this.beanClass = beanClass;
     }
 
     /**
@@ -68,16 +49,15 @@ public class BeanHandler<T> extends BeanComponent<T> implements ResultHandler<T>
         // 遍历Resultset和元数据，将第一行各列的数据存到'Java Bean'中
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
-            Map<String, PropertyDescriptor> propMap = IntrospectorManager.newInstance()
-                    .getPropMap(bean.getClass());
+            Map<String, PropertyDescriptor> propMap = IntrospectorManager.newInstance().getPropMap(beanClass);
             if (rs.next()) {
-                this.bean = JdbcHelper.getBeanValue(rs, rsmd, bean, propMap);
+                return JdbcHelper.getBeanValue(rs, rsmd, beanClass, propMap);
             }
         } catch (Exception e) {
             throw new ResultsTransformException("将'ResultSet'结果集转换为'Java Bean'出错!", e);
         }
 
-        return this.bean;
+        return null;
     }
 
 }
