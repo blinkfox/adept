@@ -20,9 +20,10 @@ public final class ClassHelper {
     /**
      * 根据class生成该class对应类的新实例.
      * @param clazz class
+     * @param <T> 泛型方法
      * @return 泛型T
      */
-    public static Object newInstanceByClass(Class<?> clazz) {
+    public static <T> T newInstanceByClass(Class<T> clazz) {
         if (clazz == null) {
             throw new AdeptRuntimeException("需要实例化的class为null.");
         }

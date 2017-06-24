@@ -109,9 +109,8 @@ public class AdeptTest {
      * 测试通过`BeanHandler`来生成得到Bean的实例.
      */
     @Test
-    @SuppressWarnings("unchecked")
     public void testToBean() {
-        UserInfo userInfo = (UserInfo) Adept.quickStart()
+        UserInfo userInfo = Adept.quickStart()
                 .query(USER_INFO_SQL, 3)
                 .end(BeanHandler.newInstance(UserInfo.class));
         Assert.assertNotNull(userInfo);
@@ -124,7 +123,7 @@ public class AdeptTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testToBeanList() {
-        List<UserInfo> userInfos = (List<UserInfo>) Adept.quickStart()
+        List<UserInfo> userInfos = Adept.quickStart()
                 .query(USER_INFO_SQL, 5)
                 .end(BeanListHandler.newInstance(UserInfo.class));
         Assert.assertNotNull(userInfos);
@@ -154,6 +153,28 @@ public class AdeptTest {
                 .end(SingleHandler.newInstance());
         log.info("最大年龄是:{}", count);
         Assert.assertTrue(count >= 27);
+    }
+
+    /**
+     * 测试通过`SingleHandler`来生成得到单个对象的实例.
+     */
+    @Test
+    public void testEnd2Map() {
+        Map<String, Object> ageMap = Adept.quickStart()
+                .query("SELECT MAX(u.n_age) AS maxAge, MIN(u.n_age) AS minAge FROM t_user AS u")
+                .end2Map();
+        Assert.assertNotNull(ageMap);
+        log.info("end2Map方法结果:{}", ageMap);
+    }
+
+    /**
+     * 测试通过`SingleHandler`来生成得到单个对象的实例.
+     */
+    @Test
+    public void testEnd2MapList() {
+        List<Map<String, Object>> userMaps = Adept.quickStart()
+                .query("SELECT u.c_name AS name, u.n_age AS age FROM t_user AS u").end2MapList();
+        Assert.assertNotNull(userMaps);
     }
 
     /**
