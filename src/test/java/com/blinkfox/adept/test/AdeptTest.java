@@ -6,10 +6,10 @@ import com.blinkfox.adept.core.results.impl.BeanHandler;
 import com.blinkfox.adept.core.results.impl.BeanListHandler;
 import com.blinkfox.adept.core.results.impl.ColumnsHandler;
 import com.blinkfox.adept.core.results.impl.MapHandler;
+import com.blinkfox.adept.core.results.impl.MapListHandler;
 import com.blinkfox.adept.core.results.impl.SingleHandler;
 import com.blinkfox.adept.test.bean.UserInfo;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -29,11 +29,12 @@ public class AdeptTest {
 
     private static final Logger log = LoggerFactory.getLogger(AdeptTest.class);
 
-    /* 查询所有用户的SQL语句. */
     private static final String ALL_USER_SQL = "SELECT * FROM t_user";
 
     private static final String USER_INFO_SQL = "SELECT c_id AS id, c_name AS name, c_nickname AS nickName,"
             + " c_email AS email, n_sex AS sex, c_birthday AS birthday FROM t_user AS u limit 0, ?";
+
+    private static final String USER_BY_AGE_SQL = "SELECT * FROM t_user AS u WHERE u.n_age > ?";
 
     /**
      * 初始化加载Adept配置.
@@ -66,9 +67,16 @@ public class AdeptTest {
      */
     @Test
     public void testQuery() {
-        String sql = "SELECT * FROM t_user AS u WHERE u.n_age > ?";
-        ResultSet rs = Adept.quickStart().query(sql, 19).getRs();
-        Assert.assertNotNull(rs);
+        Assert.assertNotNull(Adept.quickStart().query(USER_BY_AGE_SQL, 19).getRs());
+    }
+
+    /**
+     * 测试泛型的`query`方法.
+     */
+    @Test
+    public void testQuery2() {
+        Assert.assertNotNull(Adept.quickStart().query(MapListHandler.newInstance(), USER_BY_AGE_SQL, 19));
+        Assert.assertNotNull(Adept.quickStart().query(MapListHandler.class, USER_BY_AGE_SQL, 19));
     }
 
     /**
@@ -156,7 +164,7 @@ public class AdeptTest {
     }
 
     /**
-     * 测试通过`SingleHandler`来生成得到单个对象的实例.
+     * 测试`end2Map`方法.
      */
     @Test
     public void testEnd2Map() {
@@ -168,13 +176,31 @@ public class AdeptTest {
     }
 
     /**
-     * 测试通过`SingleHandler`来生成得到单个对象的实例.
+     * 测试`end2MapList`方法.
      */
     @Test
     public void testEnd2MapList() {
         List<Map<String, Object>> userMaps = Adept.quickStart()
                 .query("SELECT u.c_name AS name, u.n_age AS age FROM t_user AS u").end2MapList();
         Assert.assertNotNull(userMaps);
+    }
+
+    /**
+     * 测试`end2Bean`方法.
+     */
+    @Test
+    public void testEnd2Bean() {
+        Assert.assertNotNull(Adept.quickStart().query(USER_INFO_SQL, 5).end2Bean(UserInfo.class));
+        Assert.assertNotNull(Adept.quickStart().query(USER_INFO_SQL, 5).end2Bean(new UserInfo()));
+    }
+
+    /**
+     * 测试`end2BeanList`方法.
+     */
+    @Test
+    public void testEnd2BeanList() {
+        Assert.assertNotNull(Adept.quickStart().query(USER_INFO_SQL, 5).end2BeanList(UserInfo.class));
+        Assert.assertNotNull(Adept.quickStart().query(USER_INFO_SQL, 5).end2BeanList(new UserInfo()));
     }
 
     /**

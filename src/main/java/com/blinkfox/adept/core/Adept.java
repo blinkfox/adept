@@ -116,6 +116,7 @@ public final class Adept {
     /**
      * 得到并返回泛型T的结果,同时关闭资源.
      * @param handler 处理器
+     * @param <T> 定义泛型T
      * @return 泛型T
      */
     public <T> T end(ResultHandler<T> handler) {
@@ -131,6 +132,7 @@ public final class Adept {
     /**
      * 得到并返回Object型的结果,由于会通过反射创建实例，需要Handler的构造方法不是private的.
      * @param handlerClass ResultsHandler的Class
+     * @param <T> 定义泛型T为ResultHandler的实现类
      * @return Object实例
      */
     public <T extends ResultHandler> Object end(Class<T> handlerClass) {
@@ -164,9 +166,9 @@ public final class Adept {
     }
 
     /**
-     * 得到并返回'Map的List集合'类型的结果,同时关闭资源.
+     * 得到并返回'实体Bean'类型的结果,同时关闭资源.
      * @param beanClass 结果Bean的class
-     * @param <T> 泛型方法
+     * @param <T> 定义泛型T
      * @return beanClass对应类的实例
      */
     public <T> T end2Bean(Class<T> beanClass) {
@@ -174,16 +176,20 @@ public final class Adept {
     }
 
     /**
-     * 得到并返回'Map的List集合'类型的结果,同时关闭资源.
-     * @return Map实例
+     * 得到并返回'JavaBean的List集合'类型的结果,同时关闭资源.
+     * @param bean JavaBean
+     * @param <T> 定义泛型T
+     * @return JavaBean的List集合
      */
     public <T> List<T> end2BeanList(T bean) {
         return this.end(new BeanListHandler<T>(bean));
     }
 
     /**
-     * 得到并返回'Map的List集合'类型的结果,同时关闭资源.
-     * @return Map实例
+     * 得到并返回'JavaBean的List集合'类型的结果,同时关闭资源.
+     * @param beanClass JavaBean的class
+     * @param <T> 定义泛型T
+     * @return JavaBean的List集合
      */
     public <T> List<T> end2BeanList(Class<T> beanClass) {
         return this.end(new BeanListHandler<T>(beanClass));
@@ -218,6 +224,18 @@ public final class Adept {
      */
     public <T> T query(ResultHandler<T> handler, String sql, Object... params) {
         return this.query(sql, params).end(handler);
+    }
+
+    /**
+     * 将sql语句的查询结果转换并返回对应`ResultHandler class`的结果类型.
+     * @param handlerClass 结果处理器实例
+     * @param sql SQL语句
+     * @param params SQL参数
+     * @param <T> 泛型方法
+     * @return Object实例
+     */
+    public <T extends ResultHandler> Object query(Class<T> handlerClass, String sql, Object... params) {
+        return this.query(sql, params).end(handlerClass);
     }
 
 }
