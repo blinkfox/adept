@@ -1,5 +1,7 @@
 package com.blinkfox.adept.test.bean;
 
+import java.util.Date;
+
 /**
  * 用户信息Bean.
  * @author blinkfox on 2017/6/13.
@@ -24,11 +26,23 @@ public class UserInfo {
     /* 生日 */
     private String birthday;
 
+    /* 日期型生日 */
+    private Date birthDate;
+
     /**
      * 空构造方法.
      */
     public UserInfo() {
         super();
+    }
+
+    /**
+     * 仅日期的构造函数.
+     * @param date 生日
+     */
+    public UserInfo(Date date) {
+        super();
+        this.birthDate = date;
     }
 
     /* getter和setter方法. */
@@ -78,6 +92,14 @@ public class UserInfo {
 
     public void setBirthday(String birthday) {
         this.birthday = birthday;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     /**

@@ -10,6 +10,7 @@ import com.blinkfox.adept.core.results.impl.MapListHandler;
 import com.blinkfox.adept.core.results.impl.SingleHandler;
 import com.blinkfox.adept.test.bean.UserInfo;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -30,6 +31,12 @@ public class AdeptTest {
     private static final Logger log = LoggerFactory.getLogger(AdeptTest.class);
 
     private static final String ALL_USER_SQL = "SELECT * FROM t_user";
+
+    private static final String ALL_USER_COUNT_SQL = "SELECT COUNT(*) AS user_count FROM t_user AS u";
+
+    private static final String ALL_USER_NAME_SQL = "SELECT c_name, c_nickname FROM t_user";
+
+    private static final String MAX_USER_AGE_SQL = "SELECT MAX(u.n_age) FROM t_user AS u";
 
     private static final String USER_INFO_SQL = "SELECT c_id AS id, c_name AS name, c_nickname AS nickName,"
             + " c_email AS email, n_sex AS sex, c_birthday AS birthday FROM t_user AS u limit 0, ?";
@@ -95,11 +102,10 @@ public class AdeptTest {
      */
     @Test
     public void testToMap() {
-        String sql = "SELECT COUNT(*) AS user_count FROM t_user AS u";
-        Map<String, Object> map = Adept.quickStart().query(sql).end(MapHandler.newInstance());
+        Map<String, Object> map = Adept.quickStart().query(ALL_USER_COUNT_SQL).end(MapHandler.newInstance());
         // 获取用户总数的map，并断言数量
         Assert.assertNotNull(map);
-        Assert.assertEquals(3, map.get("user_count"));
+        Assert.assertTrue((Integer) map.get("user_count") >= 3);
     }
 
     /**
@@ -118,8 +124,7 @@ public class AdeptTest {
      */
     @Test
     public void testToBean() {
-        UserInfo userInfo = Adept.quickStart()
-                .query(USER_INFO_SQL, 3)
+        UserInfo userInfo = Adept.quickStart().query(USER_INFO_SQL, 3)
                 .end(BeanHandler.newInstance(UserInfo.class));
         Assert.assertNotNull(userInfo);
         log.info(userInfo.toString());
@@ -144,9 +149,7 @@ public class AdeptTest {
      */
     @Test
     public void testToColumnList() {
-        List<Object> nickNames = Adept.quickStart()
-                .query("SELECT c_name, c_nickname FROM t_user")
-                .end(ColumnsHandler.newInstance());
+        List<Object> nickNames = Adept.quickStart().query(ALL_USER_NAME_SQL).end(ColumnsHandler.newInstance());
         Assert.assertNotNull(nickNames);
         log.info(nickNames.toString());
     }
@@ -156,9 +159,7 @@ public class AdeptTest {
      */
     @Test
     public void testToSingle() {
-        int count = (Integer) Adept.quickStart()
-                .query("SELECT MAX(u.n_age) FROM t_user AS u")
-                .end(SingleHandler.newInstance());
+        int count = (Integer) Adept.quickStart().query(MAX_USER_AGE_SQL).end(SingleHandler.newInstance());
         log.info("最大年龄是:{}", count);
         Assert.assertTrue(count >= 27);
     }
@@ -168,10 +169,11 @@ public class AdeptTest {
      */
     @Test
     public void testEnd2Map() {
-        Map<String, Object> ageMap = Adept.quickStart()
-                .query("SELECT MAX(u.n_age) AS maxAge, MIN(u.n_age) AS minAge FROM t_user AS u")
-                .end2Map();
+        String sql = "SELECT MAX(u.n_age) AS maxAge, MIN(u.n_age) AS minAge FROM t_user AS u";
+        Map<String, Object> ageMap = Adept.quickStart().query(sql).end2Map();
+        Map<String, Object> ageMap2 = Adept.quickStart().queryForMap(sql);
         Assert.assertNotNull(ageMap);
+        Assert.assertNotNull(ageMap2);
         log.info("end2Map方法结果:{}", ageMap);
     }
 
@@ -180,9 +182,11 @@ public class AdeptTest {
      */
     @Test
     public void testEnd2MapList() {
-        List<Map<String, Object>> userMaps = Adept.quickStart()
-                .query("SELECT u.c_name AS name, u.n_age AS age FROM t_user AS u").end2MapList();
+        String sql = "SELECT u.c_name AS name, u.n_age AS age FROM t_user AS u";
+        List<Map<String, Object>> userMaps = Adept.quickStart().query(sql).end2MapList();
+        List<Map<String, Object>> userMaps2 = Adept.quickStart().queryForMapList(sql);
         Assert.assertNotNull(userMaps);
+        Assert.assertNotNull(userMaps2);
     }
 
     /**
@@ -190,8 +194,16 @@ public class AdeptTest {
      */
     @Test
     public void testEnd2Bean() {
-        Assert.assertNotNull(Adept.quickStart().query(USER_INFO_SQL, 5).end2Bean(UserInfo.class));
-        Assert.assertNotNull(Adept.quickStart().query(USER_INFO_SQL, 5).end2Bean(new UserInfo()));
+        UserInfo userInfo = Adept.quickStart().query(USER_INFO_SQL, 5).end2Bean(UserInfo.class);
+        Assert.assertNotNull(userInfo);
+        UserInfo userInfo2 = Adept.quickStart().query(USER_INFO_SQL, 3).end2Bean(new UserInfo());
+        Assert.assertNotNull(userInfo2);
+        UserInfo userInfo3 = Adept.quickStart().queryForBean(new UserInfo(new Date()), USER_INFO_SQL, 6);
+        Assert.assertNotNull(userInfo3);
+        Assert.assertNotNull(userInfo3.getBirthDate());
+        UserInfo userInfo4 = Adept.quickStart().queryForBean(UserInfo.class, USER_INFO_SQL, 2);
+        Assert.assertNotNull(userInfo4);
+        Assert.assertNull(userInfo4.getBirthDate());
     }
 
     /**
@@ -199,8 +211,33 @@ public class AdeptTest {
      */
     @Test
     public void testEnd2BeanList() {
-        Assert.assertNotNull(Adept.quickStart().query(USER_INFO_SQL, 5).end2BeanList(UserInfo.class));
-        Assert.assertNotNull(Adept.quickStart().query(USER_INFO_SQL, 5).end2BeanList(new UserInfo()));
+        List<UserInfo> userInfos = Adept.quickStart().query(USER_INFO_SQL, 5).end2BeanList(UserInfo.class);
+        Assert.assertNotNull(userInfos);
+        List<UserInfo> userInfos3 = Adept.quickStart().queryForBeanList(UserInfo.class, USER_INFO_SQL, 5);
+        Assert.assertNotNull(userInfos3);
+    }
+
+    /**
+     * 测试`end2Columns`方法.
+     */
+    @Test
+    public void testEnd2Columns() {
+        List<Object> nickNames = Adept.quickStart().query(ALL_USER_NAME_SQL).end2Columns();
+        List<Object> nickNames2 = Adept.quickStart().queryForColumns(ALL_USER_NAME_SQL);
+        Assert.assertNotNull(nickNames);
+        Assert.assertNotNull(nickNames2);
+    }
+
+    /**
+     * 测试`end2Columns`方法.
+     */
+    @Test
+    public void testEnd2Single() {
+        int count = (Integer) Adept.quickStart().query(MAX_USER_AGE_SQL).end2Single();
+        int count2 = (Integer) Adept.quickStart().queryForSingle(MAX_USER_AGE_SQL);
+        log.info("最大年龄是:{}", count);
+        Assert.assertTrue(count >= 27);
+        Assert.assertTrue(count2 >= 27);
     }
 
     /**

@@ -4,8 +4,10 @@ import com.blinkfox.adept.config.ConfigInfo;
 import com.blinkfox.adept.core.results.ResultHandler;
 import com.blinkfox.adept.core.results.impl.BeanHandler;
 import com.blinkfox.adept.core.results.impl.BeanListHandler;
+import com.blinkfox.adept.core.results.impl.ColumnsHandler;
 import com.blinkfox.adept.core.results.impl.MapHandler;
 import com.blinkfox.adept.core.results.impl.MapListHandler;
+import com.blinkfox.adept.core.results.impl.SingleHandler;
 import com.blinkfox.adept.exception.AdeptRuntimeException;
 import com.blinkfox.adept.exception.NoDataSourceException;
 import com.blinkfox.adept.exception.NullConnectionException;
@@ -177,22 +179,28 @@ public final class Adept {
 
     /**
      * 得到并返回'JavaBean的List集合'类型的结果,同时关闭资源.
-     * @param bean JavaBean
-     * @param <T> 定义泛型T
-     * @return JavaBean的List集合
-     */
-    public <T> List<T> end2BeanList(T bean) {
-        return this.end(new BeanListHandler<T>(bean));
-    }
-
-    /**
-     * 得到并返回'JavaBean的List集合'类型的结果,同时关闭资源.
      * @param beanClass JavaBean的class
      * @param <T> 定义泛型T
      * @return JavaBean的List集合
      */
     public <T> List<T> end2BeanList(Class<T> beanClass) {
         return this.end(new BeanListHandler<T>(beanClass));
+    }
+
+    /**
+     * 得到并返回'第一列数据的集合'类型的结果,同时关闭资源.
+     * @return MapList实例
+     */
+    public List<Object> end2Columns() {
+        return this.end(ColumnsHandler.newInstance());
+    }
+
+    /**
+     * 得到并返回'第一列数据的集合'类型的结果,同时关闭资源.
+     * @return MapList实例
+     */
+    public Object end2Single() {
+        return this.end(SingleHandler.newInstance());
     }
 
     /**
@@ -236,6 +244,82 @@ public final class Adept {
      */
     public <T extends ResultHandler> Object query(Class<T> handlerClass, String sql, Object... params) {
         return this.query(sql, params).end(handlerClass);
+    }
+
+    /**
+     * 查询sql语句并将结果转换为Map.
+     * @param sql SQL语句
+     * @param params SQL参数
+     * @return map实例
+     */
+    public Map<String, Object> queryForMap(String sql, Object... params) {
+        return this.query(sql, params).end2Map();
+    }
+
+    /**
+     * 查询sql语句并将结果转换为MapList.
+     * @param sql SQL语句
+     * @param params SQL参数
+     * @return map实例
+     */
+    public List<Map<String, Object>> queryForMapList(String sql, Object... params) {
+        return this.query(sql, params).end2MapList();
+    }
+
+    /**
+     * 查询sql语句并将结果转换为Bean.
+     * @param bean 实体bean
+     * @param sql SQL语句
+     * @param params SQL参数
+     * @param <T> 泛型Bean
+     * @return bean实例
+     */
+    public <T> T queryForBean(T bean, String sql, Object... params) {
+        return this.query(sql, params).end2Bean(bean);
+    }
+
+    /**
+     * 查询sql语句并将结果转换为Bean.
+     * @param beanClass 实体bean的class
+     * @param sql SQL语句
+     * @param params SQL参数
+     * @param <T> 泛型Bean
+     * @return bean实例
+     */
+    public <T> T queryForBean(Class<T> beanClass, String sql, Object... params) {
+        return this.query(sql, params).end2Bean(beanClass);
+    }
+
+    /**
+     * 查询sql语句并将结果转换为Bean的List集合.
+     * @param beanClass 实体bean的class
+     * @param sql SQL语句
+     * @param params SQL参数
+     * @param <T> 泛型Bean
+     * @return Bean的List集合
+     */
+    public <T> List<T> queryForBeanList(Class<T> beanClass, String sql, Object... params) {
+        return this.query(sql, params).end2BeanList(beanClass);
+    }
+
+    /**
+     * 查询sql语句并将结果转换为MapList.
+     * @param sql SQL语句
+     * @param params SQL参数
+     * @return 第一列数据的实例集合
+     */
+    public List<Object> queryForColumns(String sql, Object... params) {
+        return this.query(sql, params).end2Columns();
+    }
+
+    /**
+     * 查询sql语句并将结果转换为MapList.
+     * @param sql SQL语句
+     * @param params SQL参数
+     * @return 单个实例
+     */
+    public Object queryForSingle(String sql, Object... params) {
+        return this.query(sql, params).end2Single();
     }
 
 }
