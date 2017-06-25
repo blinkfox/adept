@@ -147,7 +147,7 @@ public final class Adept {
      */
     public Adept query(String sql , Object... params) {
         // 根据数据库连接、SQL语句及参数得到PreparedStatement实例，然后再得到ResultSet实例.
-        this.rs = JdbcHelper.getQueryResultSet(this.getPreparedStatement(sql, params).getPstmt());
+        this.rs = JdbcHelper.getQueryResultSet(this.conn, this.getPreparedStatement(sql, params).getPstmt());
         return this;
     }
 
@@ -326,14 +326,23 @@ public final class Adept {
     }
 
     /**
-     * 执行数据库的插入语句并返回主键.
-     * <p>执行查询并获取到主键，再放回前关闭资源.</p>
+     * 执行数据库的更新操作.
+     * <p>执行数据库的增删改等操作，最后再结束前关闭资源.</p>
+     * @param sql sql语句
+     * @param params 不定参数
+     */
+    private void executeUpdate(String sql , Object... params) {
+        JdbcHelper.executeInsert(this.conn, this.getPreparedStatement(sql, params).getPstmt());
+    }
+
+    /**
+     * 执行数据库的插入语句.
+     * <p>执行插入，再放回前关闭资源.</p>
      * @param sql sql语句
      * @param params 不定参数
      */
     public void insert(String sql , Object... params) {
-        // 根据数据库连接、SQL语句及参数得到PreparedStatement实例，然后再得到ResultSet实例.
-        JdbcHelper.executeInsert(this.conn, this.getPreparedStatement(sql, params).getPstmt());
+        this.executeUpdate(sql, params);
     }
 
 }

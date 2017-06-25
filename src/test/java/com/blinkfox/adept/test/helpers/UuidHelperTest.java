@@ -21,7 +21,7 @@ public class UuidHelperTest {
     public void testGetUuid() {
         String uuid = UuidHelper.getUuid();
         Assert.assertNotNull(uuid);
-        log.info("生成的默认UUID为:{}", uuid);
+        log.info("生成默认的UUID为:{}", uuid);
     }
 
 }

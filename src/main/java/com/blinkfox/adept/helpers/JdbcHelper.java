@@ -1,6 +1,7 @@
 package com.blinkfox.adept.helpers;
 
 import com.blinkfox.adept.core.fields.FieldHandlerChain;
+import com.blinkfox.adept.exception.AdeptRuntimeException;
 import com.blinkfox.adept.exception.BuildStatementException;
 import com.blinkfox.adept.exception.ExecuteSqlException;
 import com.blinkfox.adept.exception.NoDataSourceException;
@@ -43,8 +44,7 @@ public final class JdbcHelper {
         try {
             return ds.getConnection();
         } catch (SQLException e) {
-            log.error("从数据源（连接池）中获取数据库连接失败.", e);
-            return null;
+            throw new AdeptRuntimeException("从数据源（连接池）中获取数据库连接失败.", e);
         }
     }
 
@@ -56,9 +56,13 @@ public final class JdbcHelper {
      * @return PreparedStatement实例
      */
     public static PreparedStatement getPreparedStatement(Connection conn, String sql, Object... params) {
+        PreparedStatement pstmt = null;
         try {
-            return setPreparedStatementParams(conn.prepareStatement(sql), params);
+            pstmt = conn.prepareStatement(sql);
+            return setPreparedStatementParams(pstmt, params);
         } catch (Exception e) {
+            // 抛出异常前关闭数据库连接资源.
+            close(conn, pstmt);
             throw new BuildStatementException("构建prepareStatement语句出错", e);
         }
     }
@@ -92,10 +96,11 @@ public final class JdbcHelper {
      * @param pstmt PreparedStatement实例.
      * @return ResultSet实例
      */
-    public static ResultSet getQueryResultSet(PreparedStatement pstmt) {
+    public static ResultSet getQueryResultSet(Connection conn,PreparedStatement pstmt) {
         try {
             return pstmt.executeQuery();
         } catch (SQLException e) {
+            close(conn, pstmt);
             throw new ExecuteSqlException("执行查询的SQL语句出错!", e);
         }
     }
@@ -110,7 +115,7 @@ public final class JdbcHelper {
         } catch (SQLException e) {
             throw new ExecuteSqlException("执行新增的SQL语句出错!", e);
         } finally {
-            close(conn, pstmt, null);
+            close(conn, pstmt);
         }
     }
 
@@ -213,6 +218,16 @@ public final class JdbcHelper {
      */
     public static void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
         close(rs);
+        close(pstmt);
+        close(conn);
+    }
+
+    /**
+     * 关闭`Connection`和`PreparedStatement`资源.
+     * @param conn connection实例
+     * @param pstmt PreparedStatement实例
+     */
+    public static void close(Connection conn, PreparedStatement pstmt) {
         close(pstmt);
         close(conn);
     }
