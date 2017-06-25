@@ -21,7 +21,9 @@ import javax.sql.DataSource;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +31,7 @@ import org.slf4j.LoggerFactory;
  * Adept测试类.
  * @author blinkfox on 2017/6/5.
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AdeptTest {
 
     private static final Logger log = LoggerFactory.getLogger(AdeptTest.class);
@@ -264,10 +267,10 @@ public class AdeptTest {
 
     /**
      * 测试`end2Columns`方法.
-     * 由于Sqlite busy问题取消此单元测试.
+     * 由于Sqlite busy问题,保证'增删改'的一些方法先执行.
      */
-    // @Test
-    public void testInsert() {
+    @Test
+    public void testA01Insert() {
         // 插入的数据加上当前的时间戳.
         String now = String.valueOf(System.currentTimeMillis());
         Adept.quickStart().insert(INSERT_USER_SQL, UuidHelper.getUuid(), "testName" + now,
