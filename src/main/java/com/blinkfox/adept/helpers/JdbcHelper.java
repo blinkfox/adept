@@ -8,12 +8,7 @@ import com.blinkfox.adept.exception.NoDataSourceException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.Map;
 import javax.sql.DataSource;
 
@@ -64,7 +59,7 @@ public final class JdbcHelper {
         try {
             return setPreparedStatementParams(conn.prepareStatement(sql), params);
         } catch (Exception e) {
-            throw new BuildStatementException("", e);
+            throw new BuildStatementException("构建prepareStatement语句出错", e);
         }
     }
 
@@ -102,6 +97,20 @@ public final class JdbcHelper {
             return pstmt.executeQuery();
         } catch (SQLException e) {
             throw new ExecuteSqlException("执行查询的SQL语句出错!", e);
+        }
+    }
+
+    /**
+     * 得到查询SQL语句的ResultSet结果集.
+     * @param pstmt PreparedStatement实例.
+     */
+    public static void executeInsert(Connection conn, PreparedStatement pstmt) {
+        try {
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new ExecuteSqlException("执行新增的SQL语句出错!", e);
+        } finally {
+            close(conn, pstmt, null);
         }
     }
 

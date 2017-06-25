@@ -9,6 +9,7 @@ import com.blinkfox.adept.core.results.impl.MapHandler;
 import com.blinkfox.adept.core.results.impl.MapListHandler;
 import com.blinkfox.adept.core.results.impl.SingleHandler;
 import com.blinkfox.adept.helpers.JdbcHelper;
+import com.blinkfox.adept.helpers.UuidHelper;
 import com.blinkfox.adept.test.bean.UserInfo;
 
 import java.sql.Connection;
@@ -44,6 +45,10 @@ public class AdeptTest {
             + " c_email AS email, n_sex AS sex, c_birthday AS birthday FROM t_user AS u limit 0, ?";
 
     private static final String USER_BY_AGE_SQL = "SELECT * FROM t_user AS u WHERE u.n_age > ?";
+
+    private static final String INSERT_USER_SQL = "INSERT INTO t_user "
+            + "(c_id, c_name, c_nickname, c_password, c_email, c_birthday, n_age, n_sex, n_status, c_remark) "
+            + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     /**
      * 初始化加载Adept配置.
@@ -255,6 +260,18 @@ public class AdeptTest {
         log.info("最大年龄是:{}", count);
         Assert.assertTrue(count >= 27);
         Assert.assertTrue(count2 >= 27);
+    }
+
+    /**
+     * 测试`end2Columns`方法.
+     * 由于Sqlite busy问题取消此单元测试.
+     */
+    // @Test
+    public void testInsert() {
+        // 插入的数据加上当前的时间戳.
+        String now = String.valueOf(System.currentTimeMillis());
+        Adept.quickStart().insert(INSERT_USER_SQL, UuidHelper.getUuid(), "testName" + now,
+                "测试名称" + now, "123" + now, now + "test@gmail.com", "1995-05-19", 22, 1, 0, "测试备注信息" + now);
     }
 
     /**

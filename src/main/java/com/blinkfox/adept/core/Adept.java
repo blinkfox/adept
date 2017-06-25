@@ -140,92 +140,6 @@ public final class Adept {
     }
 
     /**
-     * 得到并返回默认为'map的List集合'的结果.
-     * @return maps集合
-     */
-    public List<Map<String, Object>> end() {
-        return this.end(MapListHandler.newInstance());
-    }
-
-    /**
-     * 得到并返回泛型T的结果,同时关闭资源.
-     * @param handler 处理器
-     * @param <T> 定义泛型T
-     * @return 泛型T
-     */
-    public <T> T end(ResultHandler<T> handler) {
-        // 如果handler不为null，执行转换并返回转换后的结果，最后关闭资源。否则抛出异常.
-        if (handler != null) {
-            T t = handler.transform(this.rs);
-            this.closeSource();
-            return t;
-        }
-        throw new AdeptRuntimeException("ResultsHandler实例为null");
-    }
-
-    /**
-     * 得到并返回Object型的结果,由于会通过反射创建实例，需要Handler的构造方法不是private的.
-     * @param handlerClass ResultsHandler的Class
-     * @param <T> 定义泛型T为ResultHandler的实现类
-     * @return Object实例
-     */
-    public <T extends ResultHandler> Object end(Class<T> handlerClass) {
-        return this.end(ClassHelper.newInstanceByClass(handlerClass));
-    }
-
-    /**
-     * 得到并返回'有序Map'类型的结果,同时关闭资源.
-     * @return Map实例
-     */
-    public Map<String, Object> end2Map() {
-        return this.end(MapHandler.newInstance());
-    }
-
-    /**
-     * 得到并返回'Map的List集合'类型的结果,同时关闭资源.
-     * @return MapList实例
-     */
-    public List<Map<String, Object>> end2MapList() {
-        return this.end(MapListHandler.newInstance());
-    }
-
-    /**
-     * 得到并返回'实体Bean'类型的结果,同时关闭资源.
-     * @param beanClass 结果Bean的class
-     * @param <T> 定义泛型T
-     * @return beanClass对应类的实例
-     */
-    public <T> T end2Bean(Class<T> beanClass) {
-        return this.end(new BeanHandler<T>(beanClass));
-    }
-
-    /**
-     * 得到并返回'JavaBean的List集合'类型的结果,同时关闭资源.
-     * @param beanClass JavaBean的class
-     * @param <T> 定义泛型T
-     * @return JavaBean的List集合
-     */
-    public <T> List<T> end2BeanList(Class<T> beanClass) {
-        return this.end(new BeanListHandler<T>(beanClass));
-    }
-
-    /**
-     * 得到并返回'第一列数据的集合'类型的结果,同时关闭资源.
-     * @return MapList实例
-     */
-    public List<Object> end2Columns() {
-        return this.end(ColumnsHandler.newInstance());
-    }
-
-    /**
-     * 得到并返回'第一列数据的集合'类型的结果,同时关闭资源.
-     * @return MapList实例
-     */
-    public Object end2Single() {
-        return this.end(SingleHandler.newInstance());
-    }
-
-    /**
      * 执行数据库查询.
      * @param sql sql语句
      * @param params 不定参数
@@ -323,6 +237,103 @@ public final class Adept {
      */
     public Object queryForSingle(String sql, Object... params) {
         return this.query(sql, params).end2Single();
+    }
+
+    /**
+     * 得到并返回默认为'map的List集合'的结果.
+     * @return maps集合
+     */
+    public List<Map<String, Object>> end() {
+        return this.end(MapListHandler.newInstance());
+    }
+
+    /**
+     * 得到并返回泛型T的结果,同时关闭资源.
+     * @param handler 处理器
+     * @param <T> 定义泛型T
+     * @return 泛型T
+     */
+    public <T> T end(ResultHandler<T> handler) {
+        // 如果handler不为null，执行转换并返回转换后的结果，最后关闭资源。否则抛出异常.
+        if (handler != null) {
+            T t = handler.transform(this.rs);
+            this.closeSource();
+            return t;
+        }
+        throw new AdeptRuntimeException("ResultsHandler实例为null");
+    }
+
+    /**
+     * 得到并返回Object型的结果,由于会通过反射创建实例，需要Handler的构造方法不是private的.
+     * @param handlerClass ResultsHandler的Class
+     * @param <T> 定义泛型T为ResultHandler的实现类
+     * @return Object实例
+     */
+    public <T extends ResultHandler> Object end(Class<T> handlerClass) {
+        return this.end(ClassHelper.newInstanceByClass(handlerClass));
+    }
+
+    /**
+     * 得到并返回'有序Map'类型的结果,同时关闭资源.
+     * @return Map实例
+     */
+    public Map<String, Object> end2Map() {
+        return this.end(MapHandler.newInstance());
+    }
+
+    /**
+     * 得到并返回'Map的List集合'类型的结果,同时关闭资源.
+     * @return MapList实例
+     */
+    public List<Map<String, Object>> end2MapList() {
+        return this.end(MapListHandler.newInstance());
+    }
+
+    /**
+     * 得到并返回'实体Bean'类型的结果,同时关闭资源.
+     * @param beanClass 结果Bean的class
+     * @param <T> 定义泛型T
+     * @return beanClass对应类的实例
+     */
+    public <T> T end2Bean(Class<T> beanClass) {
+        return this.end(new BeanHandler<T>(beanClass));
+    }
+
+    /**
+     * 得到并返回'JavaBean的List集合'类型的结果,同时关闭资源.
+     * @param beanClass JavaBean的class
+     * @param <T> 定义泛型T
+     * @return JavaBean的List集合
+     */
+    public <T> List<T> end2BeanList(Class<T> beanClass) {
+        return this.end(new BeanListHandler<T>(beanClass));
+    }
+
+    /**
+     * 得到并返回'第一列数据的集合'类型的结果,同时关闭资源.
+     * @return MapList实例
+     */
+    public List<Object> end2Columns() {
+        return this.end(ColumnsHandler.newInstance());
+    }
+
+    /**
+     * 得到并返回'第一列数据的集合'类型的结果,同时关闭资源.
+     * @return MapList实例
+     */
+    public Object end2Single() {
+        return this.end(SingleHandler.newInstance());
+    }
+
+    /**
+     * 执行数据库的插入语句并返回主键.
+     * <p>执行查询并获取到主键，再放回前关闭资源.</p>
+     * @param sql sql语句
+     * @param params 不定参数
+     */
+    public void insert(String sql , Object... params) {
+        // 根据数据库连接、SQL语句及参数得到PreparedStatement实例，然后再得到ResultSet实例.
+        JdbcHelper.executeInsert(this.conn, this.getPreparedStatement(sql, params).getPstmt());
     }
 
 }
