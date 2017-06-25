@@ -254,7 +254,7 @@ public class AdeptTest {
     }
 
     /**
-     * 测试`end2Columns`方法.
+     * 测试`end2Single`方法.
      */
     @Test
     public void testEnd2Single() {
@@ -266,7 +266,7 @@ public class AdeptTest {
     }
 
     /**
-     * 测试`end2Columns`方法.
+     * 测试`insert`方法.
      * 由于Sqlite busy问题,保证'增删改'的一些方法先执行.
      */
     @Test
@@ -275,6 +275,41 @@ public class AdeptTest {
         String now = String.valueOf(System.currentTimeMillis());
         Adept.quickStart().insert(INSERT_USER_SQL, UuidHelper.getUuid(), "testName" + now,
                 "测试名称" + now, "123" + now, now + "test@gmail.com", "1995-05-19", 22, 1, 0, "测试备注信息" + now);
+    }
+
+    /**
+     * 测试`update`方法.
+     * 由于Sqlite busy问题,保证'增删改'的一些方法先执行.
+     */
+    @Test
+    public void testA02Update() {
+        // 先更新数据
+        String lileiId = "28226714540c11e7b114b2f933d5fe66";
+        String sql = "UPDATE t_user SET c_nickname = ?, c_email = ? WHERE c_id = ?";
+        Adept.quickStart().update(sql, "李磊雷", "lileilei@163.com", lileiId);
+
+        // 再查询数据，判断是否已经更新
+        String sql2 = "SELECT c_id AS id, c_name AS name, c_nickname AS nickName,"
+                + " c_email AS email, n_sex AS sex, c_birthday AS birthday FROM t_user AS u WHERE c_id = ?";
+        UserInfo userInfo = Adept.quickStart().queryForBean(UserInfo.class, sql2, lileiId);
+        Assert.assertNotNull(userInfo);
+        Assert.assertEquals("李磊雷", userInfo.getNickName());
+
+        // 再把数据更新回去
+        Adept.quickStart().update(sql, "李雷", "lilei@gmail.com", lileiId);
+    }
+
+    /**
+     * 测试`delte`方法.
+     * 由于Sqlite busy问题,保证'增删改'的一些方法先执行.
+     */
+    @Test
+    public void testA03Delte() {
+        // 删掉刚插入的数据.
+        Adept.quickStart().delete("DELETE FROM t_user WHERE n_status = ?", 0);
+
+        // 判断删除后是否只剩5条数据了.
+        Assert.assertEquals(5, Adept.quickStart().queryForSingle(ALL_USER_COUNT_SQL));
     }
 
     /**

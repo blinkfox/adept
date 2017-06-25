@@ -336,12 +336,32 @@ public final class Adept {
     }
 
     /**
-     * 执行数据库的插入语句.
+     * 执行数据库的插入操作.
      * <p>执行插入，再放回前关闭资源.</p>
      * @param sql sql语句
      * @param params 不定参数
      */
     public void insert(String sql , Object... params) {
+        this.executeUpdate(sql, params);
+    }
+
+    /**
+     * 执行数据库的更新操作.
+     * <p>执行插入，再放回前关闭资源.</p>
+     * @param sql sql语句
+     * @param params 不定参数
+     */
+    public void update(String sql , Object... params) {
+        this.executeUpdate(sql, params);
+    }
+
+    /**
+     * 执行数据库的删除操作.
+     * <p>执行插入，再放回前关闭资源.</p>
+     * @param sql sql语句
+     * @param params 不定参数
+     */
+    public void delete(String sql , Object... params) {
         this.executeUpdate(sql, params);
     }
 
