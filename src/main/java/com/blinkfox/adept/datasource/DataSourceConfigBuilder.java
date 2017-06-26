@@ -131,8 +131,8 @@ public final class DataSourceConfigBuilder {
      * @param dsClass DataSourceConfig的class
      * @param dataSource 数据源
      */
-    public <C extends DataSourceConfig, D extends DataSource> D saveDataSource(Class<C> dsClass, D dataSource) {
-        return this.saveDataSource((DataSourceConfig) ClassHelper.newInstanceByClass(dsClass), dataSource);
+    public <C extends DataSourceConfig<D>, D extends DataSource> D saveDataSource(Class<C> dsClass, D dataSource) {
+        return this.saveDataSource((DataSourceConfig<D>) ClassHelper.newInstanceByClass(dsClass), dataSource);
     }
 
     /**
@@ -143,8 +143,7 @@ public final class DataSourceConfigBuilder {
      * @param <D> 数据源的泛型D
      * @return 数据源
      */
-    @SuppressWarnings("unchecked")
-    public <C extends DataSourceConfig, D extends DataSource> D saveDataSource(C dsConfig, D dataSource) {
+    public <C extends DataSourceConfig<D>, D extends DataSource> D saveDataSource(C dsConfig, D dataSource) {
         dsConfig.setDataSource(dataSource);
         ConfigInfo.getInstance().setDsConfig(dsConfig);
         return dataSource;

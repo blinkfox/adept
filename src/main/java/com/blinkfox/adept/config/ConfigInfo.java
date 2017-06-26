@@ -14,7 +14,7 @@ public final class ConfigInfo {
     private static final ConfigInfo configInfo = new ConfigInfo();
 
     /** 数据源配置信息. */
-    private DataSourceConfig dsConfig;
+    private DataSourceConfig<? extends DataSource> dsConfig;
 
     /**
      * 私有构造方法.
@@ -55,7 +55,7 @@ public final class ConfigInfo {
      * 通过setter方法,设置数据源配置信息实例.
      * @param dsConfig DataSourceConfig多态实例
      */
-    public void setDsConfig(DataSourceConfig dsConfig) {
+    public <D extends DataSource> void setDsConfig(DataSourceConfig<D> dsConfig) {
         this.dsConfig = dsConfig;
     }
 

@@ -5,6 +5,8 @@ package com.blinkfox.adept.exception;
  * @author blinkfox on 2017/6/11.
  */
 public class ResultsTransformException extends RuntimeException {
+    
+    private static final long serialVersionUID = 1L;
 
     /**
      * 附带msg信息的构造方法.

@@ -6,6 +6,8 @@ package com.blinkfox.adept.exception;
  */
 public class ExecuteSqlException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 附带msg信息的构造方法.
      * @param msg 消息

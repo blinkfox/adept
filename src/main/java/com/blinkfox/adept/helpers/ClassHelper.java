@@ -29,7 +29,7 @@ public final class ClassHelper {
         }
 
         try {
-            Constructor constructor = clazz.getDeclaredConstructor();
+            Constructor<T> constructor = clazz.getDeclaredConstructor();
             constructor.setAccessible(true);
             return clazz.newInstance();
         } catch (Exception e) {
@@ -44,7 +44,7 @@ public final class ClassHelper {
      */
     public static Object newInstanceByClassName(String className) {
         try {
-            Class clazz = Class.forName(className);
+            Class<?> clazz = Class.forName(className);
             return newInstanceByClass(clazz);
         } catch (ClassNotFoundException e) {
             throw new AdeptRuntimeException("未找到对应的类,className为:" + className, e);

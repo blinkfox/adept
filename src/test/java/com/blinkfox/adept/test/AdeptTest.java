@@ -165,7 +165,6 @@ public class AdeptTest {
      * 测试通过`BeanListHandler`来生成得到Bean List集合的实例.
      */
     @Test
-    @SuppressWarnings("unchecked")
     public void testToBeanList() {
         List<UserInfo> userInfos = Adept.quickStart()
                 .query(USER_INFO_SQL, 5)

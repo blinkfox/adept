@@ -171,7 +171,7 @@ public final class Adept {
      * @param <T> 泛型方法
      * @return Object实例
      */
-    public <T extends ResultHandler> Object query(Class<T> handlerClass, String sql, Object... params) {
+    public <T extends ResultHandler<R>, R> Object query(Class<T> handlerClass, String sql, Object... params) {
         return this.query(sql, params).end(handlerClass);
     }
 
@@ -267,9 +267,10 @@ public final class Adept {
      * 得到并返回Object型的结果,由于会通过反射创建实例，需要Handler的构造方法不是private的.
      * @param handlerClass ResultsHandler的Class
      * @param <T> 定义泛型T为ResultHandler的实现类
+     * @param <R> 定义返回结果的范型R
      * @return Object实例
      */
-    public <T extends ResultHandler> Object end(Class<T> handlerClass) {
+    public <T extends ResultHandler<R>, R> Object end(Class<T> handlerClass) {
         return this.end(ClassHelper.newInstanceByClass(handlerClass));
     }
 
