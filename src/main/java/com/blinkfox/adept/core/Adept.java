@@ -107,20 +107,40 @@ public final class Adept {
     }
 
     /**
+     * 校验和打印SQL语句.
+     * @param sql SQL语句
+     */
+    private void validSql(String sql) {
+        // SQL为空则关闭连接且抛出异常.
+        if (sql == null || sql.length() == 0) {
+            JdbcHelper.close(this.conn);
+            throw new AdeptRuntimeException("sql语句为空!");
+        }
+        log.info("Adept执行的SQL:{}", sql);
+    }
+
+    /**
      * 获取数据库连接的预编译执行语句PreparedStatement实例.
      * @param sql SQL语句
      * @param params SQL对应的有序参数
      * @return PreparedStatement实例
      */
     public Adept getPreparedStatement(String sql, Object... params) {
-        // SQL为空则关闭连接，直接返回Adept实例.
-        if (sql == null || sql.length() == 0) {
-            JdbcHelper.close(this.conn);
-            throw new AdeptRuntimeException("sql语句为空!");
-        }
-
-        log.info("Adept执行的SQL:{}\nAdept执行的SQL对应的参数params:{}", sql, params);
+        this.validSql(sql);
+        log.info("Adept执行的SQL对应的参数params:{}", params);
         this.pstmt = JdbcHelper.getPreparedStatement(this.conn, sql, params);
+        return this;
+    }
+
+    /**
+     * 获取数据库连接的预编译执行语句PreparedStatement实例.
+     * @param sql SQL语句
+     * @param params SQL对应的有序参数
+     * @return PreparedStatement实例
+     */
+    public Adept getBatchPreparedStatement(String sql, Object[]... params) {
+        this.validSql(sql);
+        this.pstmt = JdbcHelper.getBatchPreparedStatement(this.conn, sql, params);
         return this;
     }
 
@@ -333,7 +353,17 @@ public final class Adept {
      * @param params 不定参数
      */
     private void executeUpdate(String sql , Object... params) {
-        JdbcHelper.executeInsert(this.conn, this.getPreparedStatement(sql, params).getPstmt());
+        JdbcHelper.executeUpdate(this.conn, this.getPreparedStatement(sql, params).getPstmt());
+    }
+
+    /**
+     * 执行数据库的更新操作.
+     * <p>执行数据库的增删改等操作，最后再结束前关闭资源.</p>
+     * @param sql sql语句
+     * @param params 不定参数
+     */
+    private void executeBatchUpdate(String sql , Object[]... params) {
+        JdbcHelper.executeBatchUpdate(this.conn, this.getBatchPreparedStatement(sql, params).getPstmt());
     }
 
     /**
@@ -364,6 +394,33 @@ public final class Adept {
      */
     public void delete(String sql , Object... params) {
         this.executeUpdate(sql, params);
+    }
+
+    /**
+     * 批量插入数据.
+     * @param sql sql语句
+     * @param params 数组的集合
+     */
+    public void batchInsert(String sql, List<Object[]> params) {
+        this.executeBatchUpdate(sql, params.toArray());
+    }
+
+    /**
+     * 批量更新数据.
+     * @param sql sql语句
+     * @param params 数组的集合
+     */
+    public void batchUpdate(String sql, List<Object[]> params) {
+        this.executeBatchUpdate(sql, params.toArray());
+    }
+
+    /**
+     * 批量删除数据.
+     * @param sql sql语句
+     * @param params 数组的集合
+     */
+    public void batchDelete(String sql, List<Object[]> params) {
+        this.executeBatchUpdate(sql, params.toArray());
     }
 
 }

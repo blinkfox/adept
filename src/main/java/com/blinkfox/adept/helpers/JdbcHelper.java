@@ -9,7 +9,12 @@ import com.blinkfox.adept.exception.NoDataSourceException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Map;
 import javax.sql.DataSource;
 
@@ -68,6 +73,27 @@ public final class JdbcHelper {
     }
 
     /**
+     * 从数据库连接和sql语句中得到JDBC的'PreparedStatement'实例.
+     * @param conn 数据库连接实例
+     * @param sql SQL语句
+     * @param params 不定长参数
+     * @return PreparedStatement实例
+     */
+    public static PreparedStatement getBatchPreparedStatement(Connection conn, String sql, Object[]... params) {
+        PreparedStatement pstmt = null;
+        try {
+            // 设置自动提交为false，从而加快批量执行的速度.
+            conn.setAutoCommit(false);
+            pstmt = conn.prepareStatement(sql);
+            return setBatchPreparedStatementParams(pstmt, params);
+        } catch (Exception e) {
+            // 抛出异常前关闭数据库连接资源.
+            close(conn, pstmt);
+            throw new BuildStatementException("构建prepareStatement语句出错", e);
+        }
+    }
+
+    /**
      * 在'PreparedStatement'中设置SQL语句参数.
      * @param pstmt PreparedStatement实例
      * @param params 不定长参数
@@ -80,6 +106,42 @@ public final class JdbcHelper {
             return pstmt;
         }
 
+        return setParams(pstmt, params);
+    }
+
+    /**
+     * 在'PreparedStatement'中设置SQL语句参数.
+     * @param pstmt PreparedStatement实例
+     * @param paramsArr 不定长数组参数
+     * @return PreparedStatement实例
+     * @throws SQLException SQL异常
+     */
+    private static PreparedStatement setBatchPreparedStatementParams(PreparedStatement pstmt,
+            Object[]... paramsArr) throws SQLException {
+        if (paramsArr == null) {
+            return pstmt;
+        }
+
+        // 遍历批量执行每条语句的数组参数.
+        for (Object[] params: paramsArr) {
+            if (params == null) {
+                continue;
+            }
+            setParams(pstmt, params);
+            pstmt.addBatch();
+        }
+
+        return pstmt;
+    }
+
+    /**
+     * 循环设置PreparedStatement的参数.
+     * @param pstmt PreparedStatement实例
+     * @param params 数组参数
+     * @return PreparedStatement实例
+     * @throws SQLException SQL异常
+     */
+    private static PreparedStatement setParams(PreparedStatement pstmt, Object[] params) throws SQLException {
         for (int i = 0, len = params.length; i < len; i++) {
             Object param = params[i];
             if (param != null) {
@@ -109,9 +171,25 @@ public final class JdbcHelper {
      * 得到查询SQL语句的ResultSet结果集.
      * @param pstmt PreparedStatement实例.
      */
-    public static void executeInsert(Connection conn, PreparedStatement pstmt) {
+    public static void executeUpdate(Connection conn, PreparedStatement pstmt) {
         try {
             pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new ExecuteSqlException("执行新增的SQL语句出错!", e);
+        } finally {
+            close(conn, pstmt);
+        }
+    }
+
+    /**
+     * 批量执行数据库的'增删改'操作.
+     * @param conn 数据库连接
+     * @param pstmt PreparedStatement实例
+     */
+    public static void executeBatchUpdate(Connection conn, PreparedStatement pstmt) {
+        try {
+            pstmt.executeBatch();
+            conn.commit();
         } catch (SQLException e) {
             throw new ExecuteSqlException("执行新增的SQL语句出错!", e);
         } finally {
