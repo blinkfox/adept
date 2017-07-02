@@ -362,7 +362,7 @@ public final class Adept {
      * @param sql sql语句
      * @param params 不定参数
      */
-    private void executeBatchUpdate(String sql , Object[]... params) {
+    private void executeBatchUpdate(String sql , Object[][] params) {
         JdbcHelper.executeBatchUpdate(this.conn, this.getBatchPreparedStatement(sql, params).getPstmt());
     }
 
@@ -397,30 +397,52 @@ public final class Adept {
     }
 
     /**
+     * 将数组参数转换为二维数组.
+     * @param paramArrs 数组集合
+     * @return 二维数组
+     */
+    private Object[][] to2dArr(List<Object[]> paramArrs) {
+        if (paramArrs == null) {
+            return new Object[][]{};
+        }
+
+        return paramArrs.toArray(new Object[paramArrs.size()][]);
+    }
+
+    /**
      * 批量插入数据.
      * @param sql sql语句
-     * @param params 数组的集合
+     * @param params 二维数组参数
      */
-    public void batchInsert(String sql, List<Object[]> params) {
-        this.executeBatchUpdate(sql, params.toArray());
+    public void batchInsert(String sql, Object[][] params) {
+        this.executeBatchUpdate(sql, params);
+    }
+
+    /**
+     * 批量插入数据.
+     * @param sql sql语句
+     * @param paramArrs 数组集合
+     */
+    public void batchInsert(String sql, List<Object[]> paramArrs) {
+        this.executeBatchUpdate(sql, this.to2dArr(paramArrs));
     }
 
     /**
      * 批量更新数据.
      * @param sql sql语句
-     * @param params 数组的集合
+     * @param paramArrs 数组的集合
      */
-    public void batchUpdate(String sql, List<Object[]> params) {
-        this.executeBatchUpdate(sql, params.toArray());
+    public void batchUpdate(String sql, List<Object[]> paramArrs) {
+        this.executeBatchUpdate(sql, this.to2dArr(paramArrs));
     }
 
     /**
      * 批量删除数据.
      * @param sql sql语句
-     * @param params 数组的集合
+     * @param paramArrs 数组的集合
      */
-    public void batchDelete(String sql, List<Object[]> params) {
-        this.executeBatchUpdate(sql, params.toArray());
+    public void batchDelete(String sql, List<Object[]> paramArrs) {
+        this.executeBatchUpdate(sql, this.to2dArr(paramArrs));
     }
 
 }

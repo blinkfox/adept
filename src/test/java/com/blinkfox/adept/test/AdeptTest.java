@@ -14,6 +14,7 @@ import com.blinkfox.adept.test.bean.UserInfo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -266,7 +267,7 @@ public class AdeptTest {
 
     /**
      * 测试`insert`方法.
-     * 由于Sqlite busy问题,保证'增删改'的一些方法先执行.
+     * 由于Sqlite busy问题,通过方法名称来保证'增删改'的一些方法先执行.
      */
     @Test
     public void testA01Insert() {
@@ -278,7 +279,7 @@ public class AdeptTest {
 
     /**
      * 测试`update`方法.
-     * 由于Sqlite busy问题,保证'增删改'的一些方法先执行.
+     * 由于Sqlite busy问题,通过方法名称来保证'增删改'的一些方法先执行.
      */
     @Test
     public void testA02Update() {
@@ -300,7 +301,7 @@ public class AdeptTest {
 
     /**
      * 测试`delte`方法.
-     * 由于Sqlite busy问题,保证'增删改'的一些方法先执行.
+     * 由于Sqlite busy问题,通过方法名称来保证'增删改'的一些方法先执行.
      */
     @Test
     public void testA03Delte() {
@@ -309,6 +310,20 @@ public class AdeptTest {
 
         // 判断删除后是否只剩5条数据了.
         Assert.assertEquals(5, Adept.quickStart().queryForSingle(ALL_USER_COUNT_SQL));
+    }
+
+    /**
+     * 测试`batchInsert`方法.
+     * 由于Sqlite busy问题,通过方法名称来保证'增删改'的一些方法先执行.
+     */
+    @Test
+    public void testA04BatchInsert() {
+        // 构造需要批量插入的数据.
+        List<Object[]> paramArrs = new ArrayList<Object[]>();
+        for (int i = 0; i < 10; i++) {
+            paramArrs.add(new Object[]{UuidHelper.getUuid(), "batch_testName", "batch_测试名称", "batch_123", "batch_test@gmail.com", "1993-07-18", 24, 0, 0, "batch_测试备注"});
+        }
+        Adept.quickStart().batchInsert(INSERT_USER_SQL, paramArrs);
     }
 
     /**
