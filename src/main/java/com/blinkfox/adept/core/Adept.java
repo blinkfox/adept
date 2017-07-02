@@ -424,7 +424,16 @@ public final class Adept {
      * @param paramArrs 数组集合
      */
     public void batchInsert(String sql, List<Object[]> paramArrs) {
-        this.executeBatchUpdate(sql, this.to2dArr(paramArrs));
+        this.batchInsert(sql, this.to2dArr(paramArrs));
+    }
+
+    /**
+     * 批量更新数据.
+     * @param sql sql语句
+     * @param params 二维数组
+     */
+    public void batchUpdate(String sql, Object[][] params) {
+        this.executeBatchUpdate(sql, params);
     }
 
     /**
@@ -433,7 +442,16 @@ public final class Adept {
      * @param paramArrs 数组的集合
      */
     public void batchUpdate(String sql, List<Object[]> paramArrs) {
-        this.executeBatchUpdate(sql, this.to2dArr(paramArrs));
+        this.batchUpdate(sql, this.to2dArr(paramArrs));
+    }
+
+    /**
+     * 批量删除数据.
+     * @param sql sql语句
+     * @param params 二维数组
+     */
+    public void batchDelete(String sql, Object[][] params) {
+        this.executeBatchUpdate(sql, params);
     }
 
     /**
@@ -442,7 +460,7 @@ public final class Adept {
      * @param paramArrs 数组的集合
      */
     public void batchDelete(String sql, List<Object[]> paramArrs) {
-        this.executeBatchUpdate(sql, this.to2dArr(paramArrs));
+        this.batchDelete(sql, this.to2dArr(paramArrs));
     }
 
 }

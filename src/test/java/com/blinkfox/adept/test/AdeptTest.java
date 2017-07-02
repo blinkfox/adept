@@ -308,6 +308,11 @@ public class AdeptTest {
         // 删掉刚插入的数据.
         Adept.quickStart().delete("DELETE FROM t_user WHERE n_status = ?", 0);
 
+        // 批量删除
+        List<Object[]> paramArrs = new ArrayList<Object[]>();
+        paramArrs.add(new Object[]{0});
+        Adept.quickStart().batchDelete("DELETE FROM t_user WHERE n_status = ?", paramArrs);
+
         // 判断删除后是否只剩5条数据了.
         Assert.assertEquals(5, Adept.quickStart().queryForSingle(ALL_USER_COUNT_SQL));
     }
@@ -318,12 +323,36 @@ public class AdeptTest {
      */
     @Test
     public void testA04BatchInsert() {
-        // 构造需要批量插入的数据.
+        // 构造需要批量插入的数据，传入数组集合.
         List<Object[]> paramArrs = new ArrayList<Object[]>();
-        for (int i = 0; i < 10; i++) {
-            paramArrs.add(new Object[]{UuidHelper.getUuid(), "batch_testName", "batch_测试名称", "batch_123", "batch_test@gmail.com", "1993-07-18", 24, 0, 0, "batch_测试备注"});
+        for (int i = 1; i <= 9; i++) {
+            paramArrs.add(new Object[]{UuidHelper.getUuid(), "batch_testName" + i, "batch_测试名称" + i,
+                    "batch_123" + i, i + "batch_test@gmail.com", "1996-07-0" + i, 21, 0, 0, "batch_测试备注" + i});
         }
         Adept.quickStart().batchInsert(INSERT_USER_SQL, paramArrs);
+
+        // 传入二维数组.
+        paramArrs.clear();
+        for (int i = 10; i <= 20; i++) {
+            paramArrs.add(new Object[]{UuidHelper.getUuid(), "batch_testName" + i, "batch_测试名称" + i,
+                    "batch_123" + i, i + "batch_test@gmail.com", "1994-07-" + i, 23, 0, 0, "batch_测试备注" + i});
+        }
+        Adept.quickStart().batchInsert(INSERT_USER_SQL, paramArrs.toArray(new Object[paramArrs.size()][]));
+    }
+
+    /**
+     * 测试`batchUpdate`方法.
+     * 由于Sqlite busy问题,通过方法名称来保证'增删改'的一些方法先执行.
+     */
+    @Test
+    public void testA05Update() {
+        // 构造需要更新的数据
+        List<Object[]> paramArrs = new ArrayList<Object[]>();
+        paramArrs.add(new Object[]{"批量修改者", "lileilei@163.com"});
+
+        String sql = "UPDATE t_user SET c_nickname = ?, c_email = ? WHERE n_status = 0";
+        Adept.quickStart().batchUpdate(sql, paramArrs);
+        Adept.quickStart().batchUpdate(sql, paramArrs.toArray(new Object[paramArrs.size()][]));
     }
 
     /**
