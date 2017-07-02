@@ -304,7 +304,7 @@ public class AdeptTest {
      * 由于Sqlite busy问题,通过方法名称来保证'增删改'的一些方法先执行.
      */
     @Test
-    public void testA03Delte() {
+    public void testB01Delte() {
         // 删掉刚插入的数据.
         Adept.quickStart().delete("DELETE FROM t_user WHERE n_status = ?", 0);
 
