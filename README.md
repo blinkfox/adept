@@ -8,6 +8,14 @@ Adept是一个用于简化JDBC操作的轻量级DAO工具库。如果你不想�
 
 相对于JDBC原生繁琐的API，Adept大大简化了增删改查(CRUD)的常用操作。为了更大程度的增强数据库连接和数据库操作的性能，默认内置了Java界最快的数据库连接池[HikariCP][1]，当然你也可以根据项目的实际情况，引入和切换为其他数据库连接池，如：[Druid][2]、[Commons Pool][3]、[C3P0][4]等。
 
+## 功能
+
+- 轻量级，jar包仅仅39k大小，简单集成和使用
+- API使用简单、灵活，支持链式调用
+- 支持多种查询结果类型，支持映射为JavaBean
+- 可自定义扩展其他结果类型和类型复用
+- 支持快速的批量操作
+
   [1]: http://brettwooldridge.github.io/HikariCP
   [2]: https://github.com/alibaba/druid
   [3]: http://commons.apache.org/proper/commons-pool/index.html
