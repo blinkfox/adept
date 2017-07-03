@@ -16,6 +16,10 @@ Adept是一个用于简化JDBC操作的轻量级DAO工具库。如果你不想�
 - 可自定义扩展其他结果类型和类型复用
 - 支持快速的批量操作
 
+## 配置使用
+
+开发中，待续...
+
   [1]: http://brettwooldridge.github.io/HikariCP
   [2]: https://github.com/alibaba/druid
   [3]: http://commons.apache.org/proper/commons-pool/index.html
