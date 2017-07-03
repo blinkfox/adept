@@ -58,6 +58,12 @@
 
         <!-- 需要使用的系统提供的依赖包 -->
         <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>6.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>1.0.31</version>
@@ -76,7 +82,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- 默认使用`HikariCP`作为数据库连接池 -->
+        <!-- 主依赖包，默认使用`HikariCP`作为数据库连接池 -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP-java6</artifactId>
