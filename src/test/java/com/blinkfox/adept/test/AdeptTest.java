@@ -284,19 +284,15 @@ public class AdeptTest {
     @Test
     public void testA02Update() {
         // 先更新数据
-        String lileiId = "28226714540c11e7b114b2f933d5fe66";
-        String sql = "UPDATE t_user SET c_nickname = ?, c_email = ? WHERE c_id = ?";
-        Adept.quickStart().update(sql, "李磊雷", "lileilei@163.com", lileiId);
+        String sql = "UPDATE t_user SET c_nickname = ?, c_email = ? WHERE n_status = ?";
+        Adept.quickStart().update(sql, "李磊雷", "lileilei@163.com", 0);
 
         // 再查询数据，判断是否已经更新
         String sql2 = "SELECT c_id AS id, c_name AS name, c_nickname AS nickName,"
-                + " c_email AS email, n_sex AS sex, c_birthday AS birthday FROM t_user AS u WHERE c_id = ?";
-        UserInfo userInfo = Adept.quickStart().queryForBean(UserInfo.class, sql2, lileiId);
+                + " c_email AS email, n_sex AS sex, c_birthday AS birthday FROM t_user AS u WHERE n_status = ?";
+        UserInfo userInfo = Adept.quickStart().queryForBean(UserInfo.class, sql2, 0);
         Assert.assertNotNull(userInfo);
         Assert.assertEquals("李磊雷", userInfo.getNickName());
-
-        // 再把数据更新回去
-        Adept.quickStart().update(sql, "李雷", "lilei@gmail.com", lileiId);
     }
 
     /**
