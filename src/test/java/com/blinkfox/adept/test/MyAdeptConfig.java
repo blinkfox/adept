@@ -5,7 +5,6 @@ import com.blinkfox.adept.datasource.DataSourceConfigBuilder;
 import com.blinkfox.adept.helpers.PropHelper;
 import com.blinkfox.adept.test.datasource.BonecpDataSourceConfig;
 import com.jolbox.bonecp.BoneCPDataSource;
-import com.zaxxer.hikari.HikariDataSource;
 
 import java.util.Properties;
 
@@ -17,6 +16,7 @@ public class MyAdeptConfig extends AbstractAdeptConfig {
 
     /**
      * 配置数据库连接池.
+     * @param builder 数据源构建器
      */
     @Override
     public void configDataSource(DataSourceConfigBuilder builder) {
