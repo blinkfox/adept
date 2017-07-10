@@ -82,6 +82,12 @@
             <version>0.9.5.2</version>
             <scope>provided</scope>
         </dependency>
+	    <dependency>
+            <groupId>com.jolbox</groupId>
+            <artifactId>bonecp</artifactId>
+            <version>0.8.0.RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- 主依赖包，默认使用`HikariCP`作为数据库连接池 -->
         <dependency>
