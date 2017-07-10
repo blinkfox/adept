@@ -2,4 +2,5 @@
 - [安装配置](install-config)
 - [快速示例](quick-demo)
 - [数据源配置](datasource-config)
+- [更多用法](more-usage)
 - [其他](others)
