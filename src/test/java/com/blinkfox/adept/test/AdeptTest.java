@@ -11,6 +11,7 @@ import com.blinkfox.adept.core.results.impl.SingleHandler;
 import com.blinkfox.adept.helpers.JdbcHelper;
 import com.blinkfox.adept.helpers.UuidHelper;
 import com.blinkfox.adept.test.bean.UserInfo;
+import com.blinkfox.adept.test.core.results.ArrayHandler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -349,6 +350,18 @@ public class AdeptTest {
         String sql = "UPDATE t_user SET c_nickname = ?, c_email = ? WHERE n_status = 0";
         Adept.quickStart().batchUpdate(sql, paramArrs);
         Adept.quickStart().batchUpdate(sql, paramArrs.toArray(new Object[paramArrs.size()][]));
+    }
+
+    /**
+     * 测试获取mapList的实例.
+     */
+    @Test
+    public void testToArray() {
+        String sql = "SELECT c_name, c_nickname, c_email FROM t_user where n_age > ?";
+        Object[] userArr = Adept.quickStart().query(sql, 25).end(new ArrayHandler());
+        // 获取用户信息的对象数组
+        Assert.assertNotNull(userArr);
+        Assert.assertEquals("blinkfox", userArr[0]);
     }
 
     /**
