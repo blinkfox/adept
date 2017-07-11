@@ -2,12 +2,14 @@ package com.blinkfox.adept.test;
 
 import com.blinkfox.adept.config.AdeptConfigManager;
 import com.blinkfox.adept.core.Adept;
+import com.blinkfox.adept.core.results.ResultHandler;
 import com.blinkfox.adept.core.results.impl.BeanHandler;
 import com.blinkfox.adept.core.results.impl.BeanListHandler;
 import com.blinkfox.adept.core.results.impl.ColumnsHandler;
 import com.blinkfox.adept.core.results.impl.MapHandler;
 import com.blinkfox.adept.core.results.impl.MapListHandler;
 import com.blinkfox.adept.core.results.impl.SingleHandler;
+import com.blinkfox.adept.exception.ResultsTransformException;
 import com.blinkfox.adept.helpers.JdbcHelper;
 import com.blinkfox.adept.helpers.UuidHelper;
 import com.blinkfox.adept.test.bean.UserInfo;
@@ -15,6 +17,8 @@ import com.blinkfox.adept.test.core.results.ArrayHandler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -353,7 +357,7 @@ public class AdeptTest {
     }
 
     /**
-     * 测试获取mapList的实例.
+     * 测试获取'Array'的方法.
      */
     @Test
     public void testToArray() {
@@ -362,6 +366,44 @@ public class AdeptTest {
         // 获取用户信息的对象数组
         Assert.assertNotNull(userArr);
         Assert.assertEquals("blinkfox", userArr[0]);
+    }
+
+    /**
+     * 测试获取'ArrayList'的实例.
+     */
+    @Test
+    public void testToArrayList() {
+        String sql = "SELECT c_name, c_nickname, c_email FROM t_user where n_sex = ?";
+        List<Object[]> userArrs = Adept.quickStart().query(sql, 1).end(new ResultHandler<List<Object[]>>() {
+            @Override
+            public List<Object[]> transform(ResultSet rs) {
+                if (rs == null) {
+                    return null;
+                }
+
+                List<Object[]> arrs = new ArrayList<Object[]>();
+                try {
+                    // 获取Resultset元数据和查询的列数.
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    int cols = rsmd.getColumnCount();
+
+                    // 初始化列数长度的数组,将第一行各列的数据存到'对象数组'中.
+                    while (rs.next()) {
+                        Object[] objArr = new Object[cols];
+                        for (int i = 0; i < cols; i++)  {
+                            objArr[i] = rs.getObject(i + 1);
+                        }
+                        arrs.add(objArr);
+                    }
+                } catch (Exception e) {
+                    throw new ResultsTransformException("将'ResultSet'结果集转换为'对象数组集合'出错!", e);
+                }
+
+                return arrs;
+            }
+        });
+        // 获取用户信息的对象数组的集合.
+        Assert.assertNotNull(userArrs);
     }
 
     /**

@@ -37,7 +37,7 @@ public class ArrayHandler implements ResultHandler<Object[]> {
                 return objArr;
             }
         } catch (Exception e) {
-            throw new ResultsTransformException("将'ResultSet'结果集转换为'有序Map'出错!", e);
+            throw new ResultsTransformException("将'ResultSet'结果集转换为'对象数组'出错!", e);
         }
 
         return null;
