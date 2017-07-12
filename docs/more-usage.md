@@ -158,7 +158,45 @@ Object[] userArr = Adept.quickStart().query(sql, 25).end(rs -> {
 
 ## 批量操作
 
-待续...
+`Adept`封装了`JDBC`的批量操作，主要是批量操作和批量更新，调用的方法分别是`batchInsert`和`batchUpdate`方法。详细的方法如下：
+
+- `batchInsert(String sql, Object[][] params)`，绑定变量参数为二维对象数组参数
+- `batchInsert(String sql, List<Object[]> paramArrs)`，绑定变量参数为对象数组的`List`集合参数
+- `batchUpdate(String sql, Object[][] params)`，绑定变量参数为二维对象数组参数
+- `batchUpdate(String sql, List<Object[]> paramArrs)`，绑定变量参数为对象数组的`List`集合参数
+
+### 批量插入示例
+
+```java
+// 批量插入的SQL语句.
+String sql = "INSERT INTO t_user "
+            + "(c_id, c_name, c_nickname, c_password, c_email, c_birthday, n_age, n_sex, n_status, c_remark) "
+            + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+// 构造需要批量插入的数据，传入数组集合.
+List<Object[]> paramArrs = new ArrayList<Object[]>();
+for (int i = 1; i <= 9; i++) {
+    paramArrs.add(new Object[]{UuidHelper.getUuid(), "batch_testName" + i, "batch_测试名称" + i,
+            "batch_123" + i, i + "batch_test@gmail.com", "1996-07-0" + i, 21, 0, 0, "batch_测试备注" + i});
+}
+
+// 调用Adept批量插入语句.
+Adept.quickStart().batchInsert(INSERT_USER_SQL, paramArrs);
+```
+
+### 批量更新示例
+
+```java
+// 批量更新的SQL语句.
+String sql = "UPDATE t_user SET c_nickname = ?, c_email = ? WHERE n_status = 0";
+
+// 构造需要更新的数据
+List<Object[]> paramArrs = new ArrayList<Object[]>();
+paramArrs.add(new Object[]{"批量修改者", "lileilei@163.com"});
+
+// 调用Adept批量更新语句.
+Adept.quickStart().batchUpdate(sql, paramArrs);
+```
 
 ## 获取使用原生JDBC对象
 

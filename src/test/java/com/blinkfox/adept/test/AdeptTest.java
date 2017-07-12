@@ -346,7 +346,7 @@ public class AdeptTest {
      * 由于Sqlite busy问题,通过方法名称来保证'增删改'的一些方法先执行.
      */
     @Test
-    public void testA05Update() {
+    public void testA05BatchUpdate() {
         // 构造需要更新的数据
         List<Object[]> paramArrs = new ArrayList<Object[]>();
         paramArrs.add(new Object[]{"批量修改者", "lileilei@163.com"});
