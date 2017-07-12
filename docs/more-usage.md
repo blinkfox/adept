@@ -198,7 +198,55 @@ paramArrs.add(new Object[]{"批量修改者", "lileilei@163.com"});
 Adept.quickStart().batchUpdate(sql, paramArrs);
 ```
 
-## 获取使用原生JDBC对象
+## 得到原生JDBC对象
 
-待续...
+`Adept`只是对`JDBC`做了`薄封装`，为了赋予`Adept`更大程度上的灵活性。Adept仍然提供给了开发者灵活使用原生`JDBC`的各种对象来做数据库的相关操作。最核心的操作类`Adept`中主要提供了以下几个`JDBC`对象或者方法来供开发人员自由、灵活的操作数据。
+
+### 得到Adept实例
+
+```java
+// 获取Adept实例.
+Adept adept = Adept.newInstance();
+```
+
+### 得到数据源DataSource
+
+```java
+// Adept的静态方法，得到数据源`DataSource`实例.
+DataSource ds = Adept.getDataSource();
+```
+
+`Adept`提供了快速获取数据源的静态方法，得到了数据源，就可以从数据库连接池中获取到`Connection`实例，供开发人员自由的做数据库相关操作。
+
+### 得到连接Connection
+
+```java
+// 通过 newInstance().getConnection() 得到数据库连接.
+Connection conn = Adept.newInstance().getConnection().getConn();
+
+// 通过quickStart()得到数据库连接.
+Adept.quickStart().getConn();
+```
+
+!> `getConnection()`会从数据源中获取`Connection`。为了后续的链式操作，返回了`Adept`的当前实例，并为直接返回`Connection`实例，要获取`Connection`实例，可以通过`getConn()`方法得到。
+
+### 得到预编译语句PreparedStatement
+
+```java
+Connection conn = Adept.newInstance().getConnection().getPreparedStatement(sql, params).getPstmt();
+
+Adept.quickStart().getPreparedStatement(sql, params).getPstmt();
+```
+
+!> `getPreparedStatement(sql, params)`会从`Connection`中获取`PreparedStatement`并注入对应的SQL语句和绑定参数。为了后续的链式操作，返回了`Adept`的当前实例，并未直接返回`PreparedStatement`实例，要获取`PreparedStatement`实例，可以通过`getPstmt()`方法得到。
+
+### 得到结果集ResultSet
+
+```java
+// 获取ResultSet结果集实例
+Adept.quickStart().query(sql, params).getRs();
+```
+
+!> `query(sql, params)`会根据`PreparedStatement`执行查询的SQL语句并得到查询的ResultSet结果集。为了后续的链式操作，返回了`Adept`的当前实例，并未直接返回`ResultSet`实例，要获取`ResultSet`实例，可以通过`getRs()`方法得到。
+
 
