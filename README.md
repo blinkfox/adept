@@ -1,6 +1,6 @@
 # Adept
 
-[![Build Status](https://secure.travis-ci.org/blinkfox/adept.svg)](https://travis-ci.org/blinkfox/adept) [![codecov](https://codecov.io/gh/blinkfox/adept/branch/master/graph/badge.svg)](https://codecov.io/gh/blinkfox/adept)
+[![Build Status](https://secure.travis-ci.org/blinkfox/adept.svg)](https://travis-ci.org/blinkfox/adept) [![codecov](https://codecov.io/gh/blinkfox/adept/branch/master/graph/badge.svg)](https://codecov.io/gh/blinkfox/adept) [![Maven Central](https://img.shields.io/maven-central/v/com.blinkfox/adept.svg)](http://search.maven.org/#artifactdetails%7Ccom.blinkfox%7Cadept%7C1.0.0%7Cjar) [![Javadocs](http://www.javadoc.io/badge/com.blinkfox/adept.svg)](http://www.javadoc.io/doc/com.blinkfox/adept)
 
 ## 简单介绍
 
@@ -417,3 +417,4 @@ int count = (Integer) Adept.quickStart().queryForSingle(sql);
   [3]: http://commons.apache.org/proper/commons-pool/index.html
   [4]: http://www.mchange.com/projects/c3p0/
   [5]: http://www.apache.org/licenses/LICENSE-2.0
+

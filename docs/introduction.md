@@ -1,4 +1,6 @@
-[![Build Status](https://secure.travis-ci.org/blinkfox/adept.svg)](https://travis-ci.org/blinkfox/adept) [![codecov](https://codecov.io/gh/blinkfox/adept/branch/master/graph/badge.svg)](https://codecov.io/gh/blinkfox/adept)
+## Adept简介
+
+[![Build Status](https://secure.travis-ci.org/blinkfox/adept.svg)](https://travis-ci.org/blinkfox/adept) [![codecov](https://codecov.io/gh/blinkfox/adept/branch/master/graph/badge.svg)](https://codecov.io/gh/blinkfox/adept) [![Maven Central](https://img.shields.io/maven-central/v/com.blinkfox/adept.svg)](http://search.maven.org/#artifactdetails%7Ccom.blinkfox%7Cadept%7C1.0.0%7Cjar) [![Javadocs](http://www.javadoc.io/badge/com.blinkfox/adept.svg)](http://www.javadoc.io/doc/com.blinkfox/adept)
 
 Adept是一个用于简化JDBC操作的轻量级DAO工具库。如果你不想在例的项目中使用庞大的Hibernate等ORM工具，只是想更简单、灵活而又方便的使用原生的JDBC来操作数据库，那么Adept也许是一个不错的选择。
 
