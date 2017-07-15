@@ -17,7 +17,11 @@ public final class FieldHandlerChain {
     private FieldHandlerChain() {
         super();
     }
-
+    
+    /**
+     * 获取新的 实例.
+     * @return FieldHandlerChain实例
+     */
     public static FieldHandlerChain newInstance() {
         return new FieldHandlerChain();
     }

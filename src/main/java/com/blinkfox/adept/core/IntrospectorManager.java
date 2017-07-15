@@ -30,6 +30,7 @@ public class IntrospectorManager {
 
     /**
      * 根据JavaBean的class获取其所有的PropertyDescriptor并作为一个数组返回.
+     * @param clazz JavaBean的class
      * @return PropertyDescriptor数组
      */
     public PropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) throws IntrospectionException {

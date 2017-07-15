@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Java 8种原始类型对应的JDBC结果处理器实现类.
+ * Java中8种原始类型对应的JDBC结果处理器实现类.
  * @author blinkfox on 2017/6/17.
  */
 public class PrimitiveHandler extends AbstractFieldHandler {

@@ -10,6 +10,7 @@ public abstract class AbstractAdeptConfig {
 
     /**
      * 配置数据库连接池.
+     * @param builder 配置构造器
      */
     protected abstract void configDataSource(DataSourceConfigBuilder builder);
 
